@@ -36,7 +36,7 @@ outline: [2, 3]
 
 （未記入）
 
-## 関連ページ
+## 関連ページ {.ignore-header}
 
 - [導入方法](/guide/install)
 - [遊び方ガイド](/play/)

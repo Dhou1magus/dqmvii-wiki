@@ -191,7 +191,9 @@ export default defineConfig({
         const out = codeRule
           ? codeRule(tokens, idx, options, env, self)
           : `<code>${md.utils.escapeHtml(tokens[idx].content)}</code>`
-        return out.replace(/\{/g, '&#123;').replace(/\}/g, '&#125;')
+        return out
+          .replace(/^(<code[^>]*>)([\s\S]*)(<\/code>)$/, (_, open, body, close) => open + body.replace(/([-_/])(?=.)/g, '$1<wbr>') + close)
+          .replace(/\{/g, '&#123;').replace(/\}/g, '&#125;')
       }
 
       const imageRule = md.renderer.rules.image!
@@ -380,9 +382,9 @@ export default defineConfig({
       },
       {
         text: '遊び方ガイド',
+        link: '/play/',
         collapsed: false,
         items: [
-          { text: '目次', link: '/play/' },
           { text: 'はじめての冒険', link: '/play/start' },
           { text: '冒険のきほん', link: '/play/basics' },
           { text: 'スカウトと配合', link: '/play/scout' },
@@ -404,19 +406,29 @@ export default defineConfig({
         text: 'データ',
         collapsed: false,
         items: [
-          { text: 'モンスター図鑑', link: '/monsters/' },
-          { text: '　配合表', link: '/monsters/haigou' },
-          { text: '　スキル一覧（仲間）', link: '/monsters/skills' },
-          { text: '　特性一覧', link: '/monsters/traits' },
+          {
+            text: 'モンスター図鑑',
+            link: '/monsters/',
+            items: [
+              { text: '配合表', link: '/monsters/haigou' },
+              { text: 'スキル一覧（仲間）', link: '/monsters/skills' },
+              { text: '特性一覧', link: '/monsters/traits' }
+            ]
+          },
           { text: '職業一覧', link: '/jobs/' },
           { text: '呪文一覧', link: '/spells/' },
           { text: '特技一覧', link: '/skills/' },
-          { text: 'アイテム一覧', link: '/items/' },
-          { text: '　武器', link: '/items/weapons' },
-          { text: '　防具', link: '/items/armor' },
-          { text: '　アクセサリー', link: '/items/accessories' },
-          { text: '　素材', link: '/items/materials' },
-          { text: '　魚', link: '/items/fish' }
+          {
+            text: 'アイテム一覧',
+            link: '/items/',
+            items: [
+              { text: '武器', link: '/items/weapons' },
+              { text: '防具', link: '/items/armor' },
+              { text: 'アクセサリー', link: '/items/accessories' },
+              { text: '素材', link: '/items/materials' },
+              { text: '魚', link: '/items/fish' }
+            ]
+          }
         ]
       },
       {
@@ -431,6 +443,10 @@ export default defineConfig({
     search: {
       provider: 'local',
       options: {
+        _render(src, env, md) {
+          const html = md.render(src.replace(/\n## 関連ページ[^\n]*\n[\s\S]*$/, '\n'), env)
+          return env.frontmatter?.search === false ? '' : html
+        },
         miniSearch: {
           options: {
             tokenize: (text: string) =>

@@ -14,7 +14,7 @@ pageClass: wide-page sortable-list
 | 回復の心 |   |   |   |
 | 氷の心 |   |   |   |
 
-## 関連ページ
+## 関連ページ {.ignore-header}
 
 - [仲間のスキルと特性](/play/monster-skills)
 - [特性一覧](/monsters/traits)

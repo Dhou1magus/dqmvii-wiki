@@ -9,7 +9,7 @@ pageClass: wide-page sortable-list
 | 画像 | 魚 | 釣れる場所 | 時間 | メモ |
 | :--: | --- | --- | :--: | --- |
 
-## 関連ページ
+## 関連ページ {.ignore-header}
 
 - [釣り・メダル・町の遊び](/play/town-fun)
 - [アイテム一覧](/items/)

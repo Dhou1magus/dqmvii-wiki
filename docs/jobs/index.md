@@ -11,7 +11,7 @@ pageClass: wide-page sortable-list
 | 職業 | 門の場所 | 得意な武器 | おもな呪文・特技 | メモ |
 | --- | --- | --- | --- | --- |
 
-## 関連ページ
+## 関連ページ {.ignore-header}
 
 - [職業とスキルパネル](/play/skill-panel)
 - [呪文一覧](/spells/)

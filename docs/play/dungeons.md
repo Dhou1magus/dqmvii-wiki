@@ -18,7 +18,7 @@ pageClass: wide-page sortable-list
 | ランク | 内容 | ごほうび |
 | --- | --- | --- |
 
-## 関連ページ
+## 関連ページ {.ignore-header}
 
 - [世界と旅の扉](/play/worlds)
 - [コロシアム](/play/colosseum)

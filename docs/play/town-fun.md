@@ -41,7 +41,7 @@ outline: 2
 | 図鑑 |   |
 | 一覧表 |   |
 
-## 関連ページ
+## 関連ページ {.ignore-header}
 
 - [魚一覧](/items/fish)
 - [町の物語とクエスト](/play/story)

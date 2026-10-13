@@ -26,7 +26,7 @@ outline: 2
 
 （未記入）
 
-## 関連ページ
+## 関連ページ {.ignore-header}
 
 - [職業とスキルパネル](/play/skill-panel)
 - [町の物語とクエスト](/play/story)

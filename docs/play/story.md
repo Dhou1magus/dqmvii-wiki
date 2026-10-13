@@ -24,7 +24,7 @@ outline: 2
 | クエスト | 段階 | 内容 | ごほうび |
 | --- | --- | --- | --- |
 
-## 関連ページ
+## 関連ページ {.ignore-header}
 
 - [人間の仲間](/play/companions)
 - [実績と称号](/play/achievements)

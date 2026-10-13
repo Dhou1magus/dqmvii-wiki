@@ -9,7 +9,7 @@ pageClass: wide-page sortable-list
 | 特性 | 効果 | 持っているモンスター |
 | --- | --- | --- |
 
-## 関連ページ
+## 関連ページ {.ignore-header}
 
 - [仲間のスキルと特性](/play/monster-skills)
 - [スキル一覧（仲間）](/monsters/skills)

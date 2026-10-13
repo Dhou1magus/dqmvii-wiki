@@ -32,7 +32,7 @@ outline: 2
 
 （未記入）
 
-## 関連ページ
+## 関連ページ {.ignore-header}
 
 - [仲間のスキルと特性](/play/monster-skills)
 - [スカウトと配合](/play/scout)

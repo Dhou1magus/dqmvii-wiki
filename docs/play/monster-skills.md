@@ -38,7 +38,7 @@ Lvとプラス値が決まった値に届くと、特性が開きます。
 
 特性ごとの効果は[特性一覧](/monsters/traits)にまとめます。
 
-## 関連ページ
+## 関連ページ {.ignore-header}
 
 - [スカウトと配合](/play/scout)
 - [スキル一覧（仲間）](/monsters/skills)

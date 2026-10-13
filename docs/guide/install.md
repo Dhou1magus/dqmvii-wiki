@@ -56,7 +56,7 @@ NeoForge 26.2.0.88 を入れて、一度Minecraftを起動します。
 
 [よくある質問](/guide/faq#setup)を見てください。
 
-## 関連ページ
+## 関連ページ {.ignore-header}
 
 - [DQMVIIとは](/guide/what-is-dqmvii)
 - [よくある質問](/guide/faq)

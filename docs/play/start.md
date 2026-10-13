@@ -33,7 +33,7 @@ outline: 2
 
 旅の扉から、ランク1の世界へ出かけます。くわしくは[世界と旅の扉](/play/worlds)へ。
 
-## 関連ページ
+## 関連ページ {.ignore-header}
 
 - [冒険のきほん](/play/basics)
 - [世界と旅の扉](/play/worlds)

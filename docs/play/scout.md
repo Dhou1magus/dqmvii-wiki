@@ -39,7 +39,7 @@ outline: 2
 | 性格 | 伸びやすい能力 | メモ |
 | --- | --- | --- |
 
-## 関連ページ
+## 関連ページ {.ignore-header}
 
 - [仲間のスキルと特性](/play/monster-skills)
 - [配合表](/monsters/haigou)

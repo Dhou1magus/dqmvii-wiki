@@ -35,7 +35,7 @@ outline: 2
 | 作物 | 育つまで | 使い道 |
 | --- | --- | --- |
 
-## 関連ページ
+## 関連ページ {.ignore-header}
 
 - [素材・鍛冶・錬金](/play/smithing)
 - [はじめての冒険](/play/start)

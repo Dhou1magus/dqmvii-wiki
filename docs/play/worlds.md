@@ -39,7 +39,7 @@ outline: 2
 
 （未記入）
 
-## 関連ページ
+## 関連ページ {.ignore-header}
 
 - [ダンジョンと防衛戦](/play/dungeons)
 - [モンスター図鑑](/monsters/)

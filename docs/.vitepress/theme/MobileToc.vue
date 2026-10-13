@@ -14,8 +14,9 @@ const headers = computed(() => {
     const children = select(item.children)
     return item.level >= min && item.level <= max ? [{ ...item, children }] : children
   })
-  return select(page.value.headers)
+  return select(page.value.headers).filter(item => item.title !== '関連ページ')
 })
+const show = computed(() => headers.value.length >= 2 || headers.value.some(item => item.children.length > 0))
 
 const target = ref<HTMLElement | null>(null)
 function placeSlot() {
@@ -37,7 +38,7 @@ watch(() => route.path, () => nextTick(placeSlot), { flush: 'post' })
 </script>
 
 <template>
-  <Teleport v-if="target && headers.length" :to="target">
+  <Teleport v-if="target && show" :to="target">
     <details :key="route.path" class="mobile-toc">
       <summary>このページの目次</summary>
       <nav aria-label="このページの目次" class="mobile-toc-links">

@@ -233,6 +233,10 @@
 .wiki-themed .VPSidebarItem.level-1.is-active > .item {
   background: var(--article-active);
 }
+.wiki-themed .VPSidebarItem.level-1 > .items { margin: 1px 0 4px 10px; padding-left: 10px; }
+.wiki-themed .VPSidebarItem.level-2 > .item > .link { padding: 0 6px; }
+.wiki-themed .VPSidebarItem.level-1 .VPSidebarItem.level-2 .link .text { font-size: 12.5px; line-height: 1.7; }
+.wiki-themed .VPSidebarItem.level-2.is-active > .item { background: var(--article-active); }
 .wiki-themed .VPSidebarItem.is-active > .item > .link > .text {
   color: var(--article-accent);
   font-weight: 650;
@@ -337,6 +341,14 @@
 .wiki-themed .vp-doc .custom-block.details { background: var(--vp-c-bg-alt); }
 .wiki-themed .vp-doc :not(pre) > code { border-radius: 5px; }
 .wiki-themed .vp-doc td > code { white-space: nowrap; }
+.wiki-themed .vp-doc tr.blank-row td {
+  min-width: 0;
+  padding: 10px 14px;
+  color: var(--vp-c-text-3);
+  font-size: 13px;
+  text-align: center;
+}
+.wiki-themed .vp-doc tbody tr.blank-row:hover td { background: var(--article-surface); }
 .wiki-themed .vp-doc div[class*='language-'] { border: 1px solid var(--vp-c-divider); border-radius: 9px; }
 
 .wiki-themed .vp-doc table {
@@ -458,7 +470,10 @@
 
 @media (min-width: 960px) {
   .wiki-themed .VPDoc { padding-top: 30px; }
+  .wiki-themed .VPNavBar.has-sidebar .content { background: var(--vp-nav-bg-color); }
 }
+.wiki-themed .VPNavBar.screen-open { border-bottom-color: transparent; }
+.wiki-themed .VPNavScreen { border-top: 1px solid var(--vp-c-divider); }
 @media (max-width: 767px) {
   .wiki-themed .VPDoc { padding: 20px 20px 80px; }
   .wiki-article .article-header { margin-bottom: 12px; }
@@ -489,6 +504,12 @@
   .wiki-themed .vp-doc h3 { font-size: 16px; }
   .wiki-themed .vp-doc .dex-filter button,
   .wiki-themed .vp-doc .dq-tab-list button { font-size: 13px; }
+  .wiki-themed .vp-doc td:not(.nowrap):not(.dq-rank) { min-width: 6em; }
+  .wiki-themed .vp-doc th,
+  .wiki-themed .vp-doc td { padding: 8px 12px; }
+  .wiki-themed .vp-doc td > code { white-space: normal; }
+  .wiki-themed .vp-doc table.fit td.nowrap:last-child:not(:first-child) { white-space: normal; }
+  .wiki-themed .VPNavBarSearch .DocSearch-Button { border-color: transparent; background: transparent; }
 }
 @media (max-width: 480px) {
   .wiki-themed .VPDoc { padding-right: 16px; padding-left: 16px; }

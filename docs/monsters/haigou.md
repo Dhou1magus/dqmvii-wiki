@@ -11,7 +11,7 @@ pageClass: wide-page sortable-list
 | 親1 | 親2 | 生まれるモンスター | 条件 |
 | --- | --- | --- | --- |
 
-## 関連ページ
+## 関連ページ {.ignore-header}
 
 - [モンスター図鑑](/monsters/)
 - [スカウトと配合](/play/scout)

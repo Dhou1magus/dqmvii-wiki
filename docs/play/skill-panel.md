@@ -61,7 +61,7 @@ outline: 2
 
 （未記入）
 
-## 関連ページ
+## 関連ページ {.ignore-header}
 
 - [職業一覧](/jobs/)
 - [呪文一覧](/spells/)

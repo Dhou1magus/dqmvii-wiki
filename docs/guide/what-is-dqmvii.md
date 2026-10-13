@@ -43,7 +43,7 @@ MinecraftにドラクエのようなRPGの遊びを足すMOD「DQM」シリー�
 - 公式サイト: [DQMⅦ MOD](https://dqmvii.kj-apps.com/)
 - Discord・掲示板・ランキングへは、公式サイトから行けます。
 
-## 関連ページ
+## 関連ページ {.ignore-header}
 
 - [導入方法](/guide/install)
 - [よくある質問](/guide/faq)

@@ -21,7 +21,7 @@ export default {
   Layout() {
     const { page, frontmatter } = useData()
     const category = articleCategory(page.value.relativePath)
-    const hasSections = page.value.headers.some((header) => header.level > 1 || header.children.length > 0)
+    const hasSections = page.value.headers.some((header) => header.title !== '関連ページ' && (header.level > 1 || header.children.length > 0))
     return h(DefaultTheme.Layout, {
       class: ['wiki-themed', frontmatter.value.top ? 'wiki-top' : 'wiki-article', 'article-category-' + category.id, { 'article-no-outline': !frontmatter.value.top && !hasSections }],
       style: {
@@ -43,8 +43,32 @@ export default {
     const markBlanks = () => document.querySelectorAll('.vp-doc p').forEach((p) => {
       p.classList.toggle('blank-note', p.textContent?.trim() === '（未記入）')
     })
-    const decorate = () => { setupSortableTables(); setupTabs(); markFaqTags(); setupDexFilter(kinds()); markBlanks() }
-    onMounted(decorate)
+    const markEmptyTables = () => document.querySelectorAll<HTMLTableElement>('.vp-doc table').forEach((table) => {
+      if (table.tBodies[0]?.rows.length) return
+      const body = table.tBodies[0] ?? table.createTBody()
+      const row = body.insertRow()
+      row.className = 'blank-row'
+      const cell = row.insertCell()
+      cell.colSpan = table.tHead?.rows[0]?.cells.length ?? 1
+      cell.textContent = '（未記入）'
+    })
+    const fitTables = () => document.querySelectorAll<HTMLTableElement>('.Layout:not(.wide-page) .vp-doc table').forEach((table) => {
+      table.classList.remove('fit')
+      if (table.scrollWidth > table.clientWidth + 1) table.classList.add('fit')
+    })
+    let fitFrame = 0
+    const queueFit = () => {
+      cancelAnimationFrame(fitFrame)
+      fitFrame = requestAnimationFrame(fitTables)
+    }
+    const decorate = () => { setupSortableTables(); setupTabs(); markFaqTags(); setupDexFilter(kinds()); markBlanks(); markEmptyTables(); queueFit() }
+    onMounted(() => {
+      decorate()
+      window.addEventListener('resize', queueFit)
+      document.addEventListener('click', (event) => {
+        if ((event.target as Element | null)?.closest?.('.dq-tab')) queueFit()
+      })
+    })
     watch(() => route.path, () => nextTick(decorate))
   }
 } satisfies Theme

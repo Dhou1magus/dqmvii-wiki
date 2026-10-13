@@ -44,7 +44,7 @@ outline: 2
 | SS |   |
 | SSS |   |
 
-## 関連ページ
+## 関連ページ {.ignore-header}
 
 - [スカウトと配合](/play/scout)
 - [ダンジョンと防衛戦](/play/dungeons)
