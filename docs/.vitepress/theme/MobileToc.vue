@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useData, useRoute, type Header } from 'vitepress'
 import MobileTocList from './MobileTocList.vue'
 
@@ -16,21 +16,43 @@ const headers = computed(() => {
   })
   return select(page.value.headers)
 })
+
+const target = ref<HTMLElement | null>(null)
+function placeSlot() {
+  const title = document.querySelector('.VPDoc .vp-doc h1')
+  if (!title) {
+    target.value = null
+    return
+  }
+  let slot = title.nextElementSibling as HTMLElement | null
+  if (!slot || !slot.classList.contains('mobile-toc-slot')) {
+    slot = document.createElement('div')
+    slot.className = 'mobile-toc-slot'
+    title.insertAdjacentElement('afterend', slot)
+  }
+  target.value = slot
+}
+onMounted(placeSlot)
+watch(() => route.path, () => nextTick(placeSlot), { flush: 'post' })
 </script>
 
 <template>
-  <details v-if="headers.length" :key="route.path" class="mobile-toc">
-    <summary>このページの目次</summary>
-    <nav aria-label="このページの目次" class="mobile-toc-links">
-      <MobileTocList :items="headers" :compact="headers.every(item => !item.children.length)" />
-    </nav>
-  </details>
+  <Teleport v-if="target && headers.length" :to="target">
+    <details :key="route.path" class="mobile-toc">
+      <summary>このページの目次</summary>
+      <nav aria-label="このページの目次" class="mobile-toc-links">
+        <MobileTocList :items="headers" :compact="headers.every(item => !item.children.length)" />
+      </nav>
+    </details>
+  </Teleport>
 </template>
 
 <style>
 .mobile-toc { display: none; }
 
 @media (max-width: 767px) {
+  .VPLocalNav .VPLocalNavOutlineDropdown { display: none; }
+
   .mobile-toc {
     display: block;
     margin: 0 0 28px;
@@ -40,6 +62,7 @@ const headers = computed(() => {
   }
 
   .mobile-toc > summary {
+    margin: 0;
     padding: 12px 16px;
     color: var(--vp-c-text-1);
     font-size: 14px;
@@ -49,11 +72,12 @@ const headers = computed(() => {
   }
 
   .mobile-toc[open] > summary { border-bottom: 1px solid var(--vp-c-divider); }
-  .mobile-toc-links { max-height: min(360px, 50svh); overflow-y: auto; padding: 8px; }
-  .mobile-toc-list { margin: 0; padding: 0; list-style: none; }
-  .mobile-toc-list.compact { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 8px; }
-  .mobile-toc-list .mobile-toc-list { padding-left: 16px; }
-  .mobile-toc-list a {
+  .mobile-toc .mobile-toc-links { max-height: min(360px, 50svh); overflow-y: auto; padding: 8px; }
+  .mobile-toc .mobile-toc-list { margin: 0; padding: 0; list-style: none; }
+  .mobile-toc .mobile-toc-list li { margin: 0; }
+  .mobile-toc .mobile-toc-list.compact { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 8px; }
+  .mobile-toc .mobile-toc-list .mobile-toc-list { padding-left: 16px; }
+  .mobile-toc .mobile-toc-list a {
     display: flex;
     align-items: center;
     min-height: 44px;
@@ -65,9 +89,9 @@ const headers = computed(() => {
     overflow-wrap: anywhere;
     text-decoration: none;
   }
-  .mobile-toc-list .mobile-toc-list a { color: var(--vp-c-text-2); }
-  .mobile-toc-list a:hover,
-  .mobile-toc-list a:active { background: var(--vp-c-brand-soft); color: var(--vp-c-brand-1); }
+  .mobile-toc .mobile-toc-list .mobile-toc-list a { color: var(--vp-c-text-2); }
+  .mobile-toc .mobile-toc-list a:hover,
+  .mobile-toc .mobile-toc-list a:active { background: var(--vp-c-brand-soft); color: var(--vp-c-brand-1); }
   .mobile-toc a:focus-visible,
   .mobile-toc > summary:focus-visible { outline: 2px solid var(--vp-c-brand-1); outline-offset: -2px; }
 }
