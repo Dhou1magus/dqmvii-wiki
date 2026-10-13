@@ -301,7 +301,6 @@ async function onKey(event) {
         <header class="wiki-hero">
           <img class="hero-landscape" :src="withBase('/images/home/dq-landscape.webp')" width="2172" height="724" alt="草原と城、旅の扉、スライムがいるブロックの世界" fetchpriority="high">
           <div class="hero-copy">
-            <p class="hero-breadcrumb">トップページ <span aria-hidden="true">/</span> Minecraft ドラクエMOD</p>
             <h1><span>DQMVII</span> <span>攻略wiki</span></h1>
             <p class="hero-description">モンスター・装備・職業・冒険の進め方。<br>DQMVIIの攻略情報をまとめています。</p>
           </div>

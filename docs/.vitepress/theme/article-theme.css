@@ -109,7 +109,6 @@
   --article-active: #25454b;
 }
 
-/* Keep the original Markdown title, ID and permalink inside the landscape. */
 .wiki-article .article-header { margin: 0 0 15px; }
 .wiki-article .article-breadcrumb {
   display: flex;
@@ -180,10 +179,12 @@
   font-size: 18px;
 }
 
-/* Article chrome follows the same blue, sand, lavender and grass accents. */
 .wiki-themed .VPNavBar .content-body,
 .wiki-themed .VPNavBar .title {
   background: var(--vp-nav-bg-color);
+}
+@media (min-width: 960px) {
+  .wiki-themed .VPNavBar.has-sidebar .title { background: var(--vp-sidebar-bg-color); }
 }
 .wiki-themed .VPNavBarTitle .title {
   color: var(--vp-c-text-1);
@@ -356,7 +357,6 @@
 .wiki-themed table[data-sortable] th[aria-sort='ascending'],
 .wiki-themed table[data-sortable] th[aria-sort='descending'] { color: var(--article-accent); }
 
-/* Override the older raised key treatment only inside article pages. */
 .Layout.wiki-themed :is(.page-actions a, .VPDocFooter .pager-link, .vp-doc .dex-filter button, .vp-doc .dq-tab-list button, .VPButton) {
   --press-accent: var(--article-accent);
   border-radius: 7px;
@@ -474,4 +474,15 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .wiki-themed :is(a, button) { transition: none; }
+}
+.dark .Layout.wiki-article .vp-doc > div > h1:first-child {
+  background-color: #1d3446;
+  background-image: linear-gradient(90deg, #142430f5 0%, #142430e0 34%, #14243080 66%, #14243020 100%), var(--article-landscape);
+  color: #eef6fc;
+}
+.dark .Layout.wiki-article .vp-doc > div > h1:first-child .header-anchor { color: #a4d8ff; }
+@media (max-width: 480px) {
+  .dark .Layout.wiki-article .vp-doc > div > h1:first-child {
+    background-image: linear-gradient(180deg, transparent 74px, #1d3446 116px), var(--article-landscape);
+  }
 }

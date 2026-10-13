@@ -115,8 +115,6 @@
   pointer-events: none;
 }
 .hero-copy { width: 61%; max-width: 540px; min-width: 0; }
-.hero-breadcrumb { margin: 0; color: #3b6680; font-size: 11px; line-height: 1.65; }
-.hero-breadcrumb span { color: #7193a8; }
 .wiki-hero h1 {
   margin: 9px 0 8px;
   color: #153e59;
@@ -391,7 +389,6 @@
   .hero-landscape { inset: 0 0 auto; height: 126px; object-position: 80% center; }
   .wiki-hero::before { inset: 0 0 auto; height: 128px; background: linear-gradient(180deg, transparent 77%, #ddf0fc 100%); }
   .hero-copy { width: 100%; }
-  .hero-breadcrumb { font-size: 11px; }
   .wiki-hero h1 { margin: 9px 0 6px; font-size: 26px; }
   .hero-description { margin: 8px 0 0; font-size: 12px; line-height: 1.8; }
   .wiki-search { margin: 12px 0 13px; }
@@ -418,4 +415,14 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .wiki-home :is(a, button) { transition: none; }
+}
+.dark .wiki-hero { background: #1d3446; }
+.dark .wiki-hero::before { background: linear-gradient(90deg, #142430f5 0%, #142430e0 30%, #14243075 53%, transparent 76%); }
+.dark .wiki-hero h1 { color: #eef6fc; text-shadow: 0 1px 3px #00000080; }
+.dark .hero-description { color: #c5d8e4; }
+@media (max-width: 900px) {
+  .dark .wiki-hero::before { background: linear-gradient(90deg, #142430f2, #142430cc 45%, transparent 100%); }
+}
+@media (max-width: 580px) {
+  .dark .wiki-hero::before { background: linear-gradient(180deg, transparent 77%, #1d3446 100%); }
 }
