@@ -296,6 +296,16 @@
   font-size: 13px;
 }
 .wiki-themed .vp-doc h3 { margin-top: 25px; font-size: 17px; letter-spacing: -.015em; }
+.wiki-themed .vp-doc p.blank-note {
+  width: fit-content;
+  margin: 12px 0;
+  padding: 3px 11px;
+  border: 1px dashed var(--article-border);
+  border-radius: 6px;
+  color: var(--vp-c-text-3);
+  font-size: 13px;
+  line-height: 1.7;
+}
 .wiki-themed .vp-doc a { color: var(--vp-c-brand-1); text-underline-offset: 3px; }
 .wiki-themed .vp-doc a:hover { color: var(--vp-c-brand-2); }
 .wiki-themed .vp-doc blockquote {
@@ -326,6 +336,7 @@
 }
 .wiki-themed .vp-doc .custom-block.details { background: var(--vp-c-bg-alt); }
 .wiki-themed .vp-doc :not(pre) > code { border-radius: 5px; }
+.wiki-themed .vp-doc td > code { white-space: nowrap; }
 .wiki-themed .vp-doc div[class*='language-'] { border: 1px solid var(--vp-c-divider); border-radius: 9px; }
 
 .wiki-themed .vp-doc table {

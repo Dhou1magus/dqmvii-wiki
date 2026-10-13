@@ -281,7 +281,7 @@
 .directory-art-items { background-position: right top; }
 .directory-art-jobs { background-position: left bottom; }
 .directory-art-play { background-position: right bottom; }
-.directory-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin: 0; padding: 0; list-style: none; }
+.directory-links { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 12em), 1fr)); gap: 6px; margin: 0; padding: 0; list-style: none; }
 .directory-links li { min-width: 0; }
 .wiki-home .directory-link {
   display: flex;
@@ -304,7 +304,7 @@
   transform: none;
   -webkit-tap-highlight-color: transparent;
 }
-.directory-link > span:first-child { min-width: 0; }
+.directory-link > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .directory-arrow { flex-shrink: 0; color: var(--group-accent); font-size: 16px; opacity: .7; }
 .wiki-home .directory-link:hover,
 .wiki-home .directory-link:active { border-color: var(--group-accent); background: var(--home-active); color: var(--group-accent); text-decoration: none; }
@@ -316,10 +316,16 @@
 .home-guide-list li { min-width: 0; border-bottom: 1px solid var(--home-line); }
 .home-guide-list a { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 40px; padding: 9px 0; font-size: 14px; line-height: 1.65; }
 .home-guide-list a > span { flex-shrink: 0; color: var(--home-subtle); }
-.purpose-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px 20px; list-style: none; padding: 0; margin: 0; font-size: 14px; }
-.purpose-list li { padding: 4px 0; color: var(--home-subtle); }
+.purpose-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 22px; list-style: none; padding: 0; margin: 0; font-size: 14px; }
+.purpose-list li { min-width: 0; border-bottom: 1px solid var(--home-line); }
+.purpose-list a { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; padding: 9px 0; line-height: 1.65; }
+.purpose-list a > span:first-child { color: var(--home-subtle); }
+.purpose-list a > b { flex-shrink: 0; font-weight: 500; }
+.purpose-list a:hover > b { text-decoration: underline; text-underline-offset: 3px; }
 .contribute-section p { margin: 10px 0; color: var(--home-subtle); font-size: 14px; line-height: 1.9; }
-.contribute-links { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; }
+.contribute-links { display: flex; flex-wrap: wrap; gap: 8px; font-size: 14px; }
+.wiki-home .contribute-links a { display: inline-flex; align-items: center; min-height: 36px; padding: 6px 13px; border: 1px solid var(--home-line); border-radius: 7px; background: var(--home-button); }
+.wiki-home .contribute-links a:hover { border-color: var(--home-accent); background: var(--home-active); text-decoration: none; }
 .wanted-pages { margin-top: 16px; }
 .wanted-pages summary { width: fit-content; min-height: 32px; padding: 4px 0; color: var(--home-subtle); font-size: 13px; cursor: pointer; }
 .wanted-pages ul { padding: 0; margin: 10px 0 0; list-style: none; }
@@ -333,7 +339,7 @@
   .home-main { padding: 22px 24px 28px; }
   .wiki-hero { min-height: 178px; padding: 20px; }
   .wiki-hero h1 { font-size: 29px; }
-  .directory-links, .home-guide-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .home-guide-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 900px) {
   .home-columns { grid-template-columns: 190px minmax(0, 1fr); }
@@ -351,7 +357,7 @@
 }
 @media (max-width: 780px) {
   .category-directory { grid-template-columns: 1fr; gap: 12px; }
-  .purpose-list { grid-template-columns: 1fr; gap: 2px; }
+  .purpose-list { grid-template-columns: 1fr; gap: 0; }
 }
 @media (max-width: 767px) {
   .wiki-home { padding: 12px 16px 0; }

@@ -316,7 +316,7 @@ async function onKey(event) {
               type="search"
               role="combobox"
               autocomplete="off"
-              placeholder="モンスター・アイテム・キーワードを検索"
+              placeholder="名前・キーワードで検索"
               aria-label="ページの名前で検索"
               aria-autocomplete="list"
               aria-controls="wiki-search-results"
@@ -371,12 +371,12 @@ async function onKey(event) {
           </section>
 
           <section class="purpose-section" aria-labelledby="purpose-heading">
-            <h2 id="purpose-heading" class="home-section-title">目的から探す</h2>
-            <ul class="purpose-list"><li v-for="question in questions" :key="question.q">{{ question.q }} <span aria-hidden="true">→</span> <a :href="withBase(question.link)">{{ question.a }}</a></li></ul>
+            <h2 id="purpose-heading" class="home-section-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path :d="ICONS.spark" /></svg>目的から探す</h2>
+            <ul class="purpose-list"><li v-for="question in questions" :key="question.q"><a :href="withBase(question.link)"><span>{{ question.q }}</span><b>{{ question.a }} ›</b></a></li></ul>
           </section>
 
           <section id="home-about" class="contribute-section" aria-labelledby="contribute-heading">
-            <h2 id="contribute-heading" class="home-section-title">wikiについて</h2>
+            <h2 id="contribute-heading" class="home-section-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path :d="ICONS.help" /></svg>wikiについて</h2>
             <p>情報はseesaa wikiに、誰でも書き込めます。このサイトでは、集まった情報を見やすく整えて載せています。</p>
             <div class="contribute-links"><a :href="postUrl">seesaa wikiに書き込む →</a><a :href="withBase('/guide/contribute')">情報の送り方 →</a><a :href="withBase('/guide/updates')">MOD更新履歴 →</a></div>
             <details id="wanted-pages" class="wanted-pages"><summary>情報を募集しているページ</summary><ul><li v-for="page in wanted" :key="page.cat + page.t"><span>{{ page.cat }}</span><a :href="withBase(page.link)">{{ page.t }}</a></li></ul></details>

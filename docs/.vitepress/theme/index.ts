@@ -40,7 +40,10 @@ export default {
     const route = useRoute()
     const { theme } = useData()
     const kinds = () => (theme.value as { monsterKinds?: Kinds }).monsterKinds
-    const decorate = () => { setupSortableTables(); setupTabs(); markFaqTags(); setupDexFilter(kinds()) }
+    const markBlanks = () => document.querySelectorAll('.vp-doc p').forEach((p) => {
+      p.classList.toggle('blank-note', p.textContent?.trim() === '（未記入）')
+    })
+    const decorate = () => { setupSortableTables(); setupTabs(); markFaqTags(); setupDexFilter(kinds()); markBlanks() }
     onMounted(decorate)
     watch(() => route.path, () => nextTick(decorate))
   }
