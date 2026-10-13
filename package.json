@@ -1,0 +1,19 @@
+{
+  "name": "dqmvii-wiki",
+  "version": "1.0.0",
+  "description": "Minecraft ドラクエMOD DQMVII 攻略wiki",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "check": "node scripts/security-lint.mjs"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4"
+  },
+  "private": true,
+  "type": "module"
+}

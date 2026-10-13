@@ -1,0 +1,157 @@
+:root {
+  --press-edge: #c0cfdf;
+  --press-shadow: rgb(28 58 91 / 12%);
+  --press-highlight: rgb(255 255 255 / 90%);
+  --press-sheen: rgb(255 255 255 / 55%);
+  --press-return: cubic-bezier(.2, .8, .2, 1);
+}
+.dark {
+  --press-edge: #030303;
+  --press-shadow: rgb(0 0 0 / 24%);
+  --press-highlight: rgb(255 255 255 / 12%);
+  --press-sheen: rgb(255 255 255 / 3%);
+}
+
+:is(
+  .wiki-home .purpose-grid a,
+  .wiki-home .guide-link,
+  .wiki-home .search-submit,
+  .page-actions a,
+  .VPDocFooter .pager-link,
+  .vp-doc .dex-filter button,
+  .vp-doc .dq-tab-list button,
+  .VPButton
+) {
+  --press-depth: 2px;
+  --press-accent: var(--vp-c-brand-1);
+  position: relative;
+  border-radius: var(--press-radius, 14px);
+  background-image: linear-gradient(180deg, var(--press-sheen), transparent 65%);
+  box-shadow:
+    inset 0 1px 0 var(--press-highlight),
+    0 var(--press-depth) 0 var(--press-edge),
+    0 calc(var(--press-depth) + 2px) 8px var(--press-shadow);
+  transform: none;
+  transition:
+    box-shadow 180ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.wiki-home .purpose-grid { row-gap: 16px; }
+.wiki-home .purpose-grid a { --press-radius: 13px; }
+.wiki-home .guide-link { --press-radius: 9px; border: 1px solid var(--vp-c-border); }
+.wiki-home .search-submit {
+  --press-edge: #184774;
+  --press-highlight: rgb(255 255 255 / 28%);
+  --press-sheen: rgb(255 255 255 / 9%);
+  --press-radius: 8px;
+  border: 1px solid #326fa9;
+}
+.dark .wiki-home .search-submit { --press-edge: #102f50; }
+.VPDocFooter .pager-link { border-radius: 14px !important; }
+.page-actions { gap: 14px 12px; }
+.page-actions a { --press-radius: 10px; min-height: 42px; }
+.vp-doc .dex-filter { row-gap: 14px; }
+.vp-doc .dex-filter .grp { gap: 10px 8px; }
+.vp-doc .dex-filter button { --press-radius: 11px; min-height: 38px; font-size: 14px; }
+.vp-doc .dq-tab-list button { --press-radius: 11px; min-height: 38px; }
+
+.wiki-home .purpose-grid a > span:last-child,
+.wiki-home .guide-link > span,
+.wiki-home .search-submit > span {
+  display: inline-block;
+  transition: transform 240ms var(--press-return);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :is(
+    .wiki-home .purpose-grid a,
+    .wiki-home .guide-link,
+    .wiki-home .search-submit,
+    .page-actions a,
+    .VPDocFooter .pager-link,
+    .vp-doc .dex-filter button,
+    .vp-doc .dq-tab-list button,
+    .VPButton
+  ):not(:disabled):not([aria-disabled="true"]):not([aria-pressed="true"]):not([aria-selected="true"]):not(:active):hover {
+    border-color: var(--press-accent);
+    background-image: linear-gradient(180deg, var(--press-sheen), transparent 65%);
+    box-shadow:
+      inset 0 1px 0 var(--press-highlight),
+      0 calc(var(--press-depth) + 1px) 0 var(--press-edge),
+      0 5px 10px var(--press-shadow);
+    transform: none;
+  }
+  .wiki-home .purpose-grid a:hover > span:last-child,
+  .wiki-home .guide-link:hover > span,
+  .wiki-home .search-submit:hover > span { transform: translateX(1px); }
+}
+
+.vp-doc .dex-filter button[aria-pressed="true"],
+.vp-doc .dex-filter button.all[aria-pressed="true"],
+.vp-doc .dex-filter button[aria-pressed="true"]:hover,
+.vp-doc .dex-filter button.all[aria-pressed="true"]:hover,
+.vp-doc .dq-tab-list button[aria-selected="true"],
+.vp-doc .dq-tab-list button[aria-selected="true"]:hover {
+  background-image: none;
+  box-shadow: inset 0 2px 4px rgb(0 0 0 / 13%), 0 1px 0 var(--press-edge);
+  transform: none;
+}
+
+:is(
+  .wiki-home .purpose-grid a,
+  .wiki-home .guide-link,
+  .wiki-home .search-submit,
+  .page-actions a,
+  .VPDocFooter .pager-link,
+  .vp-doc .dex-filter button,
+  .vp-doc .dq-tab-list button,
+  .VPButton
+):not(:disabled):not([aria-disabled="true"]):active {
+  border-color: var(--press-accent);
+  box-shadow: inset 0 2px 4px rgb(0 0 0 / 12%), 0 1px 0 var(--press-edge);
+  transform: none;
+  transition-property: box-shadow, border-color, background-color, color;
+  transition-duration: 55ms;
+  transition-timing-function: ease-out;
+}
+
+:is(
+  .wiki-home .purpose-grid a,
+  .wiki-home .guide-link,
+  .wiki-home .search-submit,
+  .page-actions a,
+  .VPDocFooter .pager-link,
+  .vp-doc .dex-filter button,
+  .vp-doc .dq-tab-list button,
+  .VPButton
+):focus-visible { outline: 3px solid var(--vp-c-brand-1); outline-offset: 6px; }
+.wiki-home .search-submit:focus-visible { outline-color: #a8d8ff; }
+
+@media (pointer: coarse) {
+  .vp-doc .dex-filter button, .vp-doc .dq-tab-list button, .page-actions a, .wiki-home .guide-link,
+  .wiki-home .search-submit { min-height: 44px; }
+}
+@media (max-width: 540px) {
+  .wiki-home .search-submit > span { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(
+    .wiki-home .purpose-grid a,
+    .wiki-home .purpose-grid a > span,
+    .wiki-home .guide-link,
+    .wiki-home .guide-link > span,
+    .wiki-home .search-submit,
+    .wiki-home .search-submit > span,
+    .page-actions a,
+    .VPDocFooter .pager-link,
+    .vp-doc .dex-filter button,
+    .vp-doc .dq-tab-list button,
+    .VPButton
+  ) { transform: none !important; transition: none !important; }
+}

@@ -1,0 +1,10 @@
+node_modules
+docs/.vitepress/dist
+docs/.vitepress/cache
+docs/.vitepress/.temp
+.DS_Store
+*.log
+docs/.vitepress/*.timestamp-*.mjs
+_to_delete/
+AGENTS.md
+backups/
