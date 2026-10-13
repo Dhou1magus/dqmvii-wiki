@@ -19,7 +19,7 @@ const headers = computed(() => {
 </script>
 
 <template>
-  <details v-if="headers.length" :key="route.path" class="mobile-toc" open>
+  <details v-if="headers.length" :key="route.path" class="mobile-toc">
     <summary>このページの目次</summary>
     <nav aria-label="このページの目次" class="mobile-toc-links">
       <MobileTocList :items="headers" :compact="headers.every(item => !item.children.length)" />
