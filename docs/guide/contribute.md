@@ -9,9 +9,9 @@ description: DQMVII攻略wikiへの情報の送り方。
 
 ## seesaa wikiに書き込む
 
-[DQMVII攻略wiki（seesaa wiki）を開く](https://dqmvii.game-info.wiki/)
-
 seesaa wikiは、アカウントがなくても書き込めます。書き込まれた情報は、確かめたうえでこのサイトにも載せます。
+
+[DQMVII攻略wiki（seesaa wiki）を開く](https://dqmvii.game-info.wiki/){.dq-link-button}
 
 ## 書き込むときのお願い
 
