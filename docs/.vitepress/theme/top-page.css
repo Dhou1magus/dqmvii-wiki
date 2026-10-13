@@ -10,7 +10,6 @@
   --home-active: #e1f1fb;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 16px 24px 0;
   color: var(--home-ink);
   font-size: 15px;
   line-height: 1.65;
@@ -45,48 +44,10 @@
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.home-columns { display: grid; grid-template-columns: 200px minmax(0, 1fr); }
-.home-mobile-menu { display: none; }
-.home-sidebar {
-  min-width: 0;
-  padding: 22px 14px 28px;
-  border-right: 1px solid var(--home-line);
-  background: var(--home-menu);
-}
-.home-sidebar h2 { margin: 0 9px 10px; color: var(--home-subtle); font-size: 12px; font-weight: 500; }
-.home-sidebar-top {
-  display: block;
-  margin-bottom: 19px;
-  padding: 8px 10px;
-  border-radius: 6px;
-  background: var(--home-active);
-  font-size: 13px;
-  font-weight: 650;
-}
-.home-menu-group h3 {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  margin: 18px 9px 5px;
-  color: #335468;
-  font-size: 13px;
-  font-weight: 650;
-  line-height: 1.5;
-}
-.home-menu-group h3 svg { width: 14px; height: 14px; color: #4086a4; }
-.home-menu-group ul { padding: 0; margin: 0; list-style: none; }
-.home-menu-group li { padding: 4px 9px; color: var(--home-subtle); font-size: 13px; line-height: 1.55; }
-.home-menu-group li a { color: #3e6c83; }
-.home-menu-group li a:hover { color: var(--home-link); }
-.dark .home-menu-group h3 { color: #d3e4ed; }
-.dark .home-menu-group h3 svg { color: #87bfcc; }
-.dark .home-menu-group li a { color: #a4c6d8; }
 .home-main {
   min-width: 0;
-  padding: 22px 26px 30px;
-  background: linear-gradient(180deg, var(--home-paper), #f6faf9);
+  padding: 30px 64px 64px;
 }
-.dark .home-main { background: var(--home-paper); }
 .wiki-hero {
   position: relative;
   isolation: isolate;
@@ -335,16 +296,15 @@
 .wiki-about p { margin: 0 0 12px; }
 .wiki-metadata { display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: 12px; }
 .wiki-metadata b { margin-right: 7px; font-weight: 500; }
+@media (max-width: 959px) {
+  .home-main { padding: 24px 32px 48px; }
+}
 @media (max-width: 1100px) {
-  .home-main { padding: 22px 24px 28px; }
   .wiki-hero { min-height: 178px; padding: 20px; }
   .wiki-hero h1 { font-size: 29px; }
   .home-guide-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 900px) {
-  .home-columns { grid-template-columns: 190px minmax(0, 1fr); }
-  .home-sidebar { padding-right: 10px; padding-left: 10px; }
-  .home-main { padding: 22px 20px 26px; }
   .wiki-hero { min-height: 180px; padding: 18px; }
   .hero-copy { width: 69%; }
   .wiki-hero::before { background: linear-gradient(90deg, #ecf8fff2, #ecf8ffcc 45%, transparent 100%); }
@@ -360,46 +320,10 @@
   .purpose-list { grid-template-columns: 1fr; gap: 0; }
 }
 @media (max-width: 767px) {
-  .wiki-home { padding: 0 16px; }
-  .home-mobile-menu {
-    display: block;
-    padding: 0 16px;
-    border-bottom: 1px solid var(--home-line);
-    background: var(--home-menu);
-    font-size: 13px;
-  }
-  .home-mobile-menu summary {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 44px;
-    padding: 10px 0;
-    color: var(--home-ink);
-    list-style: none;
-    cursor: pointer;
-  }
-  .home-mobile-menu summary::-webkit-details-marker { display: none; }
-  .home-mobile-menu summary svg { width: 16px; height: 16px; }
-  .home-mobile-menu summary::after {
-    content: "";
-    width: 7px;
-    height: 7px;
-    margin: -3px 4px 0 auto;
-    border-right: 1.5px solid var(--home-subtle);
-    border-bottom: 1.5px solid var(--home-subtle);
-    transform: rotate(45deg);
-    transition: transform .2s;
-  }
-  .home-mobile-menu[open] summary::after { margin-top: 3px; transform: rotate(-135deg); }
-  .home-mobile-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 12px; padding-bottom: 12px; }
-  .home-mobile-links a { display: flex; align-items: center; min-height: 44px; }
-  .home-columns { display: block; }
-  .home-sidebar { display: none; }
-  .home-main { padding: 18px 16px 26px; }
+  .home-main { padding: 20px 20px 40px; }
 }
 @media (max-width: 580px) {
-  .wiki-home { padding: 0; }
-  .home-main { padding: 18px 13px 25px; }
+  .home-main { padding: 16px 16px 32px; }
   .wiki-hero { min-height: 0; padding: 132px 16px 16px; }
   .hero-landscape { inset: 0 0 auto; height: 126px; object-position: 80% center; }
   .wiki-hero::before { inset: 0 0 auto; height: 128px; background: linear-gradient(180deg, transparent 77%, #ddf0fc 100%); }

@@ -113,30 +113,7 @@ const guidePages = computed(() => {
 
 const introLinks = computed(() => cats.value.find((category) => category.id === 'guide').items.slice(0, 3))
 
-const homeMenuGroups = computed(() => [
-  { title: 'はじめに', icon: 'flag', items: introLinks.value },
-  ...catsReady.value.filter((category) => category.id !== 'play')
-    .map((category) => ({ title: category.title, icon: category.icon, items: category.items })),
-  { title: '遊び方ガイド', icon: 'pin', items: guidePages.value },
-  { title: 'wikiについて', icon: 'help', items: cats.value.find((category) => category.id === 'guide').items.slice(3) }
-])
-
-const mobileLinks = [
-  { t: 'はじめに', link: '#home-intro' },
-  { t: 'モンスター', link: '#category-monsters' },
-  { t: 'アイテム', link: '#category-items' },
-  { t: '職業・呪文・特技', link: '#category-jobs' },
-  { t: '遊び方ガイド', link: '#home-guides' },
-  { t: 'wikiについて', link: '#home-about' }
-]
-
 const categoryArtStyle = computed(() => ({ backgroundImage: `url("${withBase('/images/home/dq-category-atlas.webp')}")` }))
-const mobileMenu = ref(null)
-
-function closeMobileMenu() {
-  if (mobileMenu.value) mobileMenu.value.open = false
-}
-
 const wanted = [
   { cat: 'モンスター', t: 'モンスター図鑑', link: '/monsters/' },
   { cat: 'アイテム', t: 'アイテム一覧', link: '/items/' },
@@ -280,23 +257,6 @@ async function onKey(event) {
 
 <template>
   <main v-if="frontmatter.top" class="wiki-home" aria-label="DQMVII攻略wiki トップページ">
-    <details ref="mobileMenu" class="home-mobile-menu">
-      <summary><svg viewBox="0 0 24 24" aria-hidden="true"><path :d="ICONS.book" /></svg>メニュー</summary>
-      <nav class="home-mobile-links" aria-label="トップページの目次">
-        <a v-for="link in mobileLinks" :key="link.link" :href="link.link" @click="closeMobileMenu">{{ link.t }}</a>
-      </nav>
-    </details>
-    <div class="home-columns">
-      <aside class="home-sidebar" aria-label="攻略wikiのメニュー">
-        <h2>メニュー</h2>
-        <a class="home-sidebar-top" :href="withBase('/')" aria-current="page">トップページ</a>
-        <nav aria-label="攻略ページ一覧">
-          <section v-for="group in homeMenuGroups" :key="group.title" class="home-menu-group">
-            <h3><svg viewBox="0 0 24 24" aria-hidden="true"><path :d="ICONS[group.icon]" /></svg>{{ group.title }}</h3>
-            <ul><li v-for="item in group.items" :key="item.link"><a :href="withBase(item.link)">{{ item.t }}</a></li></ul>
-          </section>
-        </nav>
-      </aside>
       <div class="home-main">
         <header class="wiki-hero">
           <img class="hero-landscape" :src="withBase('/images/home/dq-landscape.webp')" width="2172" height="724" alt="草原と城、旅の扉、スライムがいるブロックの世界" fetchpriority="high">
@@ -385,6 +345,5 @@ async function onKey(event) {
           <footer class="wiki-about"><p>このwikiは有志で制作しています。掲載情報は検証環境やバージョンによって異なる場合があります。</p><div class="wiki-metadata"><span v-for="item in meta" :key="item.label"><b>{{ item.label }}</b>{{ item.value }}</span></div></footer>
         </div>
       </div>
-    </div>
   </main>
 </template>
