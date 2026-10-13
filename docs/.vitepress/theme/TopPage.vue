@@ -30,16 +30,16 @@ const ICONS = {
 }
 
 const questions = [
-  { icon: 'crown', q: '仲間を育てたい', a: '仲間モンスター', link: '/play/pets' },
-  { icon: 'sword', q: '装備を作りたい', a: '装備と鍛冶', link: '/play/smithing' },
-  { icon: 'person', q: '転職したい', a: '職業', link: '/play/jobs' },
-  { icon: 'flag', q: '拠点を整えたい', a: '施設と暮らし', link: '/play/facilities' }
+  { icon: 'crown', q: 'モンスターを仲間にしたい', a: 'スカウトと配合', link: '/play/scout' },
+  { icon: 'person', q: '職業を増やしたい', a: '職業とスキルパネル', link: '/play/skill-panel' },
+  { icon: 'sword', q: '装備を作りたい', a: '素材・鍛冶・錬金', link: '/play/smithing' },
+  { icon: 'flag', q: '拠点を整えたい', a: 'マイホームの島', link: '/play/home' }
 ]
 
 const start = [
-  { n: '01', t: '冒険のきほん', d: '操作・ステータス・戦い方', link: '/play/basics' },
-  { n: '02', t: '仲間モンスター', d: '仲間にする・育てる', link: '/play/pets' },
-  { n: '03', t: '職業', d: '転職のしかた', link: '/play/jobs' }
+  { n: '01', t: 'はじめての冒険', d: 'はじまりの神殿から出発', link: '/play/start' },
+  { n: '02', t: 'スカウトと配合', d: '仲間にする・配合する', link: '/play/scout' },
+  { n: '03', t: '職業とスキルパネル', d: 'パネルの取り方', link: '/play/skill-panel' }
 ]
 
 const cats = computed(() => [
@@ -50,7 +50,9 @@ const cats = computed(() => [
     overview: { t: 'モンスター図鑑', link: '/monsters/' },
     items: [
       { t: 'モンスター図鑑', link: '/monsters/' },
-      { t: '仲間モンスター', link: '/play/pets' }
+      { t: '配合表', link: '/monsters/haigou' },
+      { t: 'スキル一覧（仲間）', link: '/monsters/skills' },
+      { t: '特性一覧', link: '/monsters/traits' }
     ]
   },
   {
@@ -62,7 +64,8 @@ const cats = computed(() => [
       { t: '武器', link: '/items/weapons' },
       { t: '防具', link: '/items/armor' },
       { t: 'アクセサリー', link: '/items/accessories' },
-      { t: '素材', link: '/items/materials' }
+      { t: '素材', link: '/items/materials' },
+      { t: '魚', link: '/items/fish' }
     ]
   },
   {
@@ -82,10 +85,11 @@ const cats = computed(() => [
     icon: 'flag',
     overview: { t: '遊び方ガイド', link: '/play/' },
     items: [
-      { t: '冒険のきほん', link: '/play/basics' },
-      { t: '装備と鍛冶', link: '/play/smithing' },
-      { t: '施設と暮らし', link: '/play/facilities' },
-      { t: 'ダンジョン一覧', link: '/play/dungeons' }
+      { t: '世界と旅の扉', link: '/play/worlds' },
+      { t: 'ダンジョンと防衛戦', link: '/play/dungeons' },
+      { t: 'コロシアム', link: '/play/colosseum' },
+      { t: 'マイホームの島', link: '/play/home' },
+      { t: '釣り・メダル・町の遊び', link: '/play/town-fun' }
     ]
   },
   {
@@ -110,7 +114,9 @@ const wanted = [
   { cat: 'モンスター', t: 'モンスター図鑑', link: '/monsters/' },
   { cat: 'アイテム', t: 'アイテム一覧', link: '/items/' },
   { cat: '職業', t: '職業一覧', link: '/jobs/' },
-  { cat: 'ダンジョン', t: 'ダンジョン一覧', link: '/play/dungeons' }
+  { cat: '仲間', t: 'スキル一覧（仲間）', link: '/monsters/skills' },
+  { cat: '世界', t: '世界と旅の扉', link: '/play/worlds' },
+  { cat: 'ダンジョン', t: 'ダンジョンと防衛戦', link: '/play/dungeons' }
 ]
 
 const log = []

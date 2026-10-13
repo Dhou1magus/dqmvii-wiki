@@ -352,11 +352,12 @@ export default defineConfig({
         text: 'データ',
         items: [
           { text: 'モンスター図鑑', link: '/monsters/' },
+          { text: '配合表', link: '/monsters/haigou' },
           { text: '職業一覧', link: '/jobs/' },
           { text: '呪文一覧', link: '/spells/' },
           { text: '特技一覧', link: '/skills/' },
           { text: 'アイテム一覧', link: '/items/' },
-          { text: 'ダンジョン一覧', link: '/play/dungeons' }
+          { text: 'ダンジョンと防衛戦', link: '/play/dungeons' }
         ]
       },
       {
@@ -382,12 +383,21 @@ export default defineConfig({
         collapsed: false,
         items: [
           { text: '目次', link: '/play/' },
+          { text: 'はじめての冒険', link: '/play/start' },
           { text: '冒険のきほん', link: '/play/basics' },
-          { text: '仲間モンスター', link: '/play/pets' },
-          { text: '職業', link: '/play/jobs' },
-          { text: '装備と鍛冶', link: '/play/smithing' },
-          { text: '施設と暮らし', link: '/play/facilities' },
-          { text: 'ダンジョン一覧', link: '/play/dungeons' }
+          { text: 'スカウトと配合', link: '/play/scout' },
+          { text: '仲間のスキルと特性', link: '/play/monster-skills' },
+          { text: '仲間の装備と作戦', link: '/play/pets' },
+          { text: '職業とスキルパネル', link: '/play/skill-panel' },
+          { text: '人間の仲間', link: '/play/companions' },
+          { text: '世界と旅の扉', link: '/play/worlds' },
+          { text: 'ダンジョンと防衛戦', link: '/play/dungeons' },
+          { text: 'コロシアム', link: '/play/colosseum' },
+          { text: 'マイホームの島', link: '/play/home' },
+          { text: '素材・鍛冶・錬金', link: '/play/smithing' },
+          { text: '釣り・メダル・町の遊び', link: '/play/town-fun' },
+          { text: '町の物語とクエスト', link: '/play/story' },
+          { text: '実績と称号', link: '/play/achievements' }
         ]
       },
       {
@@ -395,6 +405,9 @@ export default defineConfig({
         collapsed: false,
         items: [
           { text: 'モンスター図鑑', link: '/monsters/' },
+          { text: '　配合表', link: '/monsters/haigou' },
+          { text: '　スキル一覧（仲間）', link: '/monsters/skills' },
+          { text: '　特性一覧', link: '/monsters/traits' },
           { text: '職業一覧', link: '/jobs/' },
           { text: '呪文一覧', link: '/spells/' },
           { text: '特技一覧', link: '/skills/' },
@@ -402,7 +415,8 @@ export default defineConfig({
           { text: '　武器', link: '/items/weapons' },
           { text: '　防具', link: '/items/armor' },
           { text: '　アクセサリー', link: '/items/accessories' },
-          { text: '　素材', link: '/items/materials' }
+          { text: '　素材', link: '/items/materials' },
+          { text: '　魚', link: '/items/fish' }
         ]
       },
       {
