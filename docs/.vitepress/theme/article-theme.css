@@ -146,7 +146,7 @@
   background-repeat: no-repeat;
   color: #153e59;
   font-size: clamp(25px, 2.1vw, 30px);
-  font-weight: 750;
+  font-weight: 700;
   letter-spacing: -.035em;
   line-height: 1.35;
   text-wrap: balance;
@@ -463,8 +463,28 @@
   .wiki-themed .VPDoc { padding: 20px 20px 80px; }
   .wiki-article .article-header { margin-bottom: 12px; }
   .wiki-article .article-breadcrumb { font-size: 11px; }
-  .Layout.wiki-article .vp-doc > div > h1:first-child { padding-right: 106px; padding-left: 20px; font-size: 26px; }
-  .Layout.wiki-article .vp-doc > div > h1:first-child::after { right: 12px; width: 86px; height: 86px; }
+  .Layout.wiki-article .vp-doc > div > h1:first-child,
+  .dark .Layout.wiki-article .vp-doc > div > h1:first-child {
+    isolation: isolate;
+    min-height: 0;
+    padding: calc(min((100vw - 40px) / 3, 150px) - 4px) 84px 18px 18px;
+    overflow: hidden;
+    background-image: none;
+    font-size: 26px;
+  }
+  .Layout.wiki-article .vp-doc > div > h1:first-child::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: -1;
+    height: min((100vw - 40px) / 3, 150px);
+    background: var(--article-landscape) center top / cover no-repeat;
+    -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent);
+    mask-image: linear-gradient(180deg, #000 60%, transparent);
+  }
+  .Layout.wiki-article .vp-doc > div > h1:first-child::after { top: auto; right: 12px; bottom: 8px; width: 64px; height: 64px; transform: none; }
   .wiki-themed .vp-doc h2 { margin-top: 29px; padding: 11px 12px; font-size: 18px; }
   .wiki-themed .vp-doc h3 { font-size: 16px; }
   .wiki-themed .vp-doc .dex-filter button,
@@ -472,16 +492,12 @@
 }
 @media (max-width: 480px) {
   .wiki-themed .VPDoc { padding-right: 16px; padding-left: 16px; }
-  .Layout.wiki-article .vp-doc > div > h1:first-child {
-    min-height: 0;
-    padding: 124px 16px 19px;
-    background-image: linear-gradient(180deg, transparent 74px, #ddf0fc 116px), var(--article-landscape);
-    background-size: 100% 120px, auto 116px;
-    background-position: top center, top right;
-    font-size: 24px;
-  }
-  .Layout.wiki-article .vp-doc > div > h1:first-child::after { top: 18px; right: 16px; width: 82px; height: 82px; transform: none; }
-  .Layout.wiki-article .vp-doc > div > h1:first-child .header-anchor { top: 128px; left: 3px; transform: none; font-size: 14px; }
+  .Layout.wiki-article .vp-doc > div > h1:first-child,
+  .dark .Layout.wiki-article .vp-doc > div > h1:first-child { padding-right: 76px; padding-left: 16px; font-size: 24px; }
+  .Layout.wiki-article .vp-doc > div > h1:first-child::after { width: 56px; height: 56px; }
+}
+@media (max-width: 767px), (hover: none) {
+  .Layout.wiki-article .vp-doc > div > h1:first-child .header-anchor { display: none; }
 }
 @media (pointer: coarse) {
   .wiki-themed :is(.vp-doc .dex-filter button, .vp-doc .dq-tab-list button, .page-actions a) { min-height: 44px; }
@@ -491,12 +507,11 @@
 }
 .dark .Layout.wiki-article .vp-doc > div > h1:first-child {
   background-color: #1d3446;
-  background-image: linear-gradient(90deg, #142430f5 0%, #142430e0 34%, #14243080 66%, #14243020 100%), var(--article-landscape);
   color: #eef6fc;
 }
-.dark .Layout.wiki-article .vp-doc > div > h1:first-child .header-anchor { color: #a4d8ff; }
-@media (max-width: 480px) {
+@media (min-width: 768px) {
   .dark .Layout.wiki-article .vp-doc > div > h1:first-child {
-    background-image: linear-gradient(180deg, transparent 74px, #1d3446 116px), var(--article-landscape);
+    background-image: linear-gradient(90deg, #142430f5 0%, #142430e0 34%, #14243080 66%, #14243020 100%), var(--article-landscape);
   }
 }
+.dark .Layout.wiki-article .vp-doc > div > h1:first-child .header-anchor { color: #a4d8ff; }
