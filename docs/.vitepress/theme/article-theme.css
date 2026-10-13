@@ -1,3 +1,4 @@
+html { scrollbar-gutter: stable; }
 :root {
   --vp-c-bg: #f6faf9;
   --vp-c-bg-alt: #eff6f5;
@@ -472,6 +473,7 @@
 @media (min-width: 960px) {
   .wiki-themed .VPDoc { padding-top: 30px; }
   .wiki-themed .VPNavBar.has-sidebar .content { background: var(--vp-nav-bg-color); }
+  .wiki-themed .VPDoc.has-sidebar .content-container { margin-left: 0; }
 }
 .wiki-themed .VPNavBar.screen-open { border-bottom-color: transparent; }
 .wiki-themed .VPNavScreen { border-top: 1px solid var(--vp-c-divider); }

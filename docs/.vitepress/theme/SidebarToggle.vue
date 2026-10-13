@@ -96,8 +96,8 @@ onUnmounted(() => {
 
   .wiki-sidebar-collapsed .VPSidebar { display: none; }
   .wiki-sidebar-collapsed .VPContent.has-sidebar {
-    padding-left: max(0px, calc((100vw - var(--vp-layout-max-width)) / 2));
-    padding-right: max(0px, calc((100vw - var(--vp-layout-max-width)) / 2));
+    padding-left: max(0px, calc((100% - var(--vp-layout-max-width)) / 2));
+    padding-right: max(0px, calc((100% - var(--vp-layout-max-width)) / 2));
   }
   .wiki-sidebar-collapsed .VPLocalNav.has-sidebar { padding-left: 0; }
   .wiki-sidebar-collapsed .VPNavBar:not(.home) { background-color: var(--vp-nav-bg-color); }

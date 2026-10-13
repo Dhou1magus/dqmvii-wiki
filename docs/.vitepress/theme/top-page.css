@@ -8,8 +8,6 @@
   --home-link: #17629d;
   --home-accent: #2183c5;
   --home-active: #e1f1fb;
-  max-width: 1280px;
-  margin: 0 auto;
   color: var(--home-ink);
   font-size: 15px;
   line-height: 1.65;
