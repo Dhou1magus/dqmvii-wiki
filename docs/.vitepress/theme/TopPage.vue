@@ -101,7 +101,7 @@ const cats = computed(() => [
 ])
 
 const catsReady = computed(() => cats.value
-  .map((c) => ({ ...c, items: c.items.filter((i) => i.link) }))
+  .map((c) => ({ ...c, items: c.items.filter((i) => i.link).map((i) => ({ ...i, parts: i.t.split(/(?<=・)/) })) }))
   .filter((c) => c.id !== 'guide' && c.items.length))
 
 const guidePages = computed(() => {
@@ -319,7 +319,7 @@ async function onKey(event) {
                   <span class="directory-art" :class="'directory-art-' + category.id" :style="categoryArtStyle" aria-hidden="true"></span>
                 </header>
                 <ul class="directory-links">
-                  <li v-for="item in category.items" :key="item.link"><a class="directory-link" :href="withBase(item.link)"><span>{{ item.t }}</span><span class="directory-arrow" aria-hidden="true">›</span></a></li>
+                  <li v-for="item in category.items" :key="item.link"><a class="directory-link" :href="withBase(item.link)"><span><template v-for="(part, k) in item.parts" :key="k"><wbr v-if="k">{{ part }}</template></span><span class="directory-arrow" aria-hidden="true">›</span></a></li>
                 </ul>
               </section>
             </div>

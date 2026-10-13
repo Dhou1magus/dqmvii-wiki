@@ -263,7 +263,7 @@
   transform: none;
   -webkit-tap-highlight-color: transparent;
 }
-.directory-link > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.directory-link > span:first-child { min-width: 0; word-break: keep-all; overflow-wrap: anywhere; }
 .directory-arrow { flex-shrink: 0; color: var(--group-accent); font-size: 16px; opacity: .7; }
 .wiki-home .directory-link:hover,
 .wiki-home .directory-link:active { border-color: var(--group-accent); background: var(--home-active); color: var(--group-accent); text-decoration: none; }
