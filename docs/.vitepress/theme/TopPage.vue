@@ -36,12 +36,6 @@ const questions = [
   { icon: 'flag', q: '拠点を整えたい', a: 'マイホームの島', link: '/play/home' }
 ]
 
-const start = [
-  { n: '01', t: 'はじめての冒険', d: 'はじまりの神殿から出発', link: '/play/start' },
-  { n: '02', t: 'スカウトと配合', d: '仲間にする・配合する', link: '/play/scout' },
-  { n: '03', t: '職業とスキルパネル', d: 'パネルの取り方', link: '/play/skill-panel' }
-]
-
 const cats = computed(() => [
   {
     id: 'monsters',
@@ -108,7 +102,40 @@ const cats = computed(() => [
 
 const catsReady = computed(() => cats.value
   .map((c) => ({ ...c, items: c.items.filter((i) => i.link) }))
-  .filter((c) => c.items.length))
+  .filter((c) => c.id !== 'guide' && c.items.length))
+
+const guidePages = computed(() => {
+  const groups = Array.isArray(theme.value.sidebar) ? theme.value.sidebar : []
+  return (groups.find((group) => group.text === '遊び方ガイド')?.items ?? [])
+    .filter((item) => item.link && item.link !== '/play/')
+    .map((item) => ({ t: item.text, link: item.link }))
+})
+
+const introLinks = computed(() => cats.value.find((category) => category.id === 'guide').items.slice(0, 3))
+
+const homeMenuGroups = computed(() => [
+  { title: 'はじめに', icon: 'flag', items: introLinks.value },
+  ...catsReady.value.filter((category) => category.id !== 'play')
+    .map((category) => ({ title: category.title, icon: category.icon, items: category.items })),
+  { title: '遊び方ガイド', icon: 'pin', items: guidePages.value },
+  { title: 'wikiについて', icon: 'help', items: cats.value.find((category) => category.id === 'guide').items.slice(3) }
+])
+
+const mobileLinks = [
+  { t: 'はじめに', link: '#home-intro' },
+  { t: 'モンスター', link: '#category-monsters' },
+  { t: 'アイテム', link: '#category-items' },
+  { t: '職業・呪文・特技', link: '#category-jobs' },
+  { t: '遊び方ガイド', link: '#home-guides' },
+  { t: 'wikiについて', link: '#home-about' }
+]
+
+const categoryArtStyle = computed(() => ({ backgroundImage: `url("${withBase('/images/home/dq-category-atlas.webp')}")` }))
+const mobileMenu = ref(null)
+
+function closeMobileMenu() {
+  if (mobileMenu.value) mobileMenu.value.open = false
+}
 
 const wanted = [
   { cat: 'モンスター', t: 'モンスター図鑑', link: '/monsters/' },
@@ -118,8 +145,6 @@ const wanted = [
   { cat: '世界', t: '世界と旅の扉', link: '/play/worlds' },
   { cat: 'ダンジョン', t: 'ダンジョンと防衛戦', link: '/play/dungeons' }
 ]
-
-const log = []
 
 const postUrl = SEESAA_URL || withBase('/guide/contribute')
 
@@ -255,98 +280,112 @@ async function onKey(event) {
 
 <template>
   <main v-if="frontmatter.top" class="wiki-home" aria-label="DQMVII攻略wiki トップページ">
-    <header class="wiki-hero">
-      <div class="hero-heading">
-        <div>
-          <h1>DQMVII <span>攻略wiki</span></h1>
-          <p class="hero-description">{{ frontmatter.tagline }}</p>
-        </div>
-        <a class="version-link" :href="withBase('/guide/updates')"><span>掲載データの対応版</span><b>{{ stats.modVersion }}</b><span>MOD更新履歴 →</span></a>
-      </div>
-      <div ref="searchRoot" class="wiki-search" @focusin="focusSearch" @focusout="blurSearch">
-        <div class="search-field">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 5 5" /></svg>
-          <input
-            id="wiki-name-search"
-            ref="box"
-            v-model="query"
-            type="search"
-            role="combobox"
-            autocomplete="off"
-            placeholder="名前・キーワードで検索"
-            aria-label="ページの名前で検索"
-            aria-autocomplete="list"
-            aria-controls="wiki-search-results"
-            :aria-expanded="showResults"
-            :aria-activedescendant="showResults && hits.length ? 'wiki-hit-' + active : undefined"
-            @keydown="onKey"
-          >
-          <button v-if="query" class="search-clear" type="button" aria-label="検索をクリア" @click="query = ''; box?.focus()">×</button>
-          <button class="search-submit" type="button" @click="fullTextSearch">検索<span aria-hidden="true"> →</span></button>
-        </div>
-        <div v-if="showResults" class="search-results">
-          <div id="wiki-search-results" role="listbox" aria-label="ページの候補">
-            <a v-for="(h, i) in hits" :id="'wiki-hit-' + i" :key="h.url + h.title" :href="withBase(h.url)" role="option" tabindex="-1" :aria-selected="i === active" :class="{ on: i === active }" @mouseenter="active = i">
-              <span>{{ h.title }}</span><span class="result-kind">{{ h.kind }}</span>
-            </a>
-          </div>
-          <p v-if="indexFailed" class="search-message" role="status">候補を読み込めませんでした。本文検索をご利用ください。</p>
-          <p v-else-if="!index" class="search-message" role="status">検索データを読み込み中…</p>
-          <p v-else-if="!hits.length" class="search-message" role="status">「{{ query }}」に合う名前は見つかりませんでした。</p>
-          <button class="search-full" type="button" @click="fullTextSearch">本文も含めて探す <span aria-hidden="true">→</span></button>
-        </div>
-      </div>
-      <div class="hero-shortcuts"><span>すぐに見る</span><a :href="withBase('/monsters/')">モンスター図鑑</a><a :href="withBase('/items/')">アイテム一覧</a><a :href="withBase('/guide/faq')">よくある質問</a><a href="#all-categories">カテゴリ一覧</a></div>
-    </header>
-
-    <div class="home-content">
-      <section id="all-categories" class="directory-section" aria-label="攻略カテゴリ">
-        <div class="category-directory">
-          <section v-for="c in catsReady" :key="c.id" class="directory-group" :class="{ 'directory-group-wide': c.items.length > 12, 'directory-group-training': c.id === 'training' }" :aria-labelledby="'category-' + c.id">
-            <header class="directory-heading">
-              <h2 :id="'category-' + c.id"><svg viewBox="0 0 24 24" aria-hidden="true"><path :d="ICONS[c.icon]" /></svg>{{ c.title }}</h2>
-              <a v-if="c.overview" class="directory-overview" :href="withBase(c.overview.link)">{{ c.overview.t }}<span aria-hidden="true"> →</span></a>
-            </header>
-            <ul class="directory-links">
-              <li v-for="i in c.items" :key="i.t"><a class="directory-link" :href="withBase(i.link)"><span>{{ i.t }}</span><span class="directory-arrow" aria-hidden="true">›</span></a></li>
-            </ul>
+    <details ref="mobileMenu" class="home-mobile-menu">
+      <summary><svg viewBox="0 0 24 24" aria-hidden="true"><path :d="ICONS.book" /></svg>メニュー</summary>
+      <nav class="home-mobile-links" aria-label="トップページの目次">
+        <a v-for="link in mobileLinks" :key="link.link" :href="link.link" @click="closeMobileMenu">{{ link.t }}</a>
+      </nav>
+    </details>
+    <div class="home-columns">
+      <aside class="home-sidebar" aria-label="攻略wikiのメニュー">
+        <h2>メニュー</h2>
+        <a class="home-sidebar-top" :href="withBase('/')" aria-current="page">トップページ</a>
+        <nav aria-label="攻略ページ一覧">
+          <section v-for="group in homeMenuGroups" :key="group.title" class="home-menu-group">
+            <h3><svg viewBox="0 0 24 24" aria-hidden="true"><path :d="ICONS[group.icon]" /></svg>{{ group.title }}</h3>
+            <ul><li v-for="item in group.items" :key="item.link"><a :href="withBase(item.link)">{{ item.t }}</a></li></ul>
           </section>
-        </div>
-      </section>
-
-      <div class="home-guides">
-        <aside class="beginner-panel" aria-labelledby="beginner-heading">
-          <div class="beginner-heading"><svg viewBox="0 0 24 24" aria-hidden="true"><path :d="ICONS.flag" /></svg><h2 id="beginner-heading">はじめての冒険</h2></div>
-          <p>まずはここから読み進めよう。</p>
-          <ol class="beginner-steps">
-            <li v-for="s in start" :key="s.n"><a :href="withBase(s.link)"><span class="step-number">{{ s.n }}</span><span><b>{{ s.t }}</b><small>{{ s.d }}</small></span><span class="step-arrow" aria-hidden="true">›</span></a></li>
-          </ol>
-          <a class="guide-link" :href="withBase('/play/')">遊び方ガイドをすべて見る <span aria-hidden="true">→</span></a>
-        </aside>
-        <section class="purpose-section" aria-labelledby="purpose-heading">
-          <div class="section-heading"><h2 id="purpose-heading">やりたいことから探す</h2></div>
-          <div class="purpose-grid">
-            <a v-for="q in questions" :key="q.q" :href="withBase(q.link)"><svg viewBox="0 0 24 24" aria-hidden="true"><path :d="ICONS[q.icon]" /></svg><span><b>{{ q.q }}</b><small>{{ q.a }}</small></span><span aria-hidden="true">›</span></a>
+        </nav>
+      </aside>
+      <div class="home-main">
+        <header class="wiki-hero">
+          <img class="hero-landscape" :src="withBase('/images/home/dq-landscape.webp')" width="2172" height="724" alt="草原と城、旅の扉、スライムがいるブロックの世界" fetchpriority="high">
+          <div class="hero-copy">
+            <p class="hero-breadcrumb">トップページ <span aria-hidden="true">/</span> Minecraft ドラクエMOD</p>
+            <h1><span>DQMVII</span> <span>攻略wiki</span></h1>
+            <p class="hero-description">モンスター・装備・職業・冒険の進め方。<br>DQMVIIの攻略情報をまとめています。</p>
           </div>
-          <a class="guide-link" :href="withBase('/guide/faq')">よくある質問を見る <span aria-hidden="true">→</span></a>
-        </section>
-      </div>
+        </header>
 
-      <div class="community-grid">
-        <section class="updates-section" aria-labelledby="updates-heading">
-          <div class="section-heading"><h2 id="updates-heading">wikiのお知らせ</h2><a :href="withBase('/guide/updates')">MOD更新履歴 →</a></div>
-          <ul class="wiki-updates"><li v-for="l in log.slice(0, 6)" :key="l.t"><time>{{ l.d }}</time><a :href="withBase(l.link)">{{ l.t }}</a><span>{{ l.who }}</span></li></ul>
-          <details v-if="log.length > 6" class="wiki-updates-archive">
-            <summary>これまでのお知らせ（{{ log.length - 6 }}件）</summary>
-            <ul class="wiki-updates"><li v-for="l in log.slice(6)" :key="l.t"><time>{{ l.d }}</time><a :href="withBase(l.link)">{{ l.t }}</a><span>{{ l.who }}</span></li></ul>
-          </details>
-        </section>
-        <section class="contribute-panel" aria-labelledby="contribute-heading">
-          <h2 id="contribute-heading">みんなで集める攻略情報</h2><p>情報はseesaa wikiに、誰でも書き込めます。このサイトでは、集まった情報を見やすく整えて載せています。</p><div class="contribute-links"><a :href="postUrl">seesaa wikiに書き込む →</a><a :href="withBase('/guide/contribute')">情報の送り方 →</a></div>
-          <details id="wanted-pages" class="wanted-pages"><summary>情報を募集しているページ</summary><ul><li v-for="w in wanted" :key="w.cat + w.t"><span>{{ w.cat }}</span><a :href="withBase(w.link)">{{ w.t }}</a></li></ul></details>
-        </section>
+        <div ref="searchRoot" class="wiki-search" role="search" @focusin="focusSearch" @focusout="blurSearch">
+          <div class="search-field">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 5 5" /></svg>
+            <input
+              id="wiki-name-search"
+              ref="box"
+              v-model="query"
+              type="search"
+              role="combobox"
+              autocomplete="off"
+              placeholder="モンスター・アイテム・キーワードを検索"
+              aria-label="ページの名前で検索"
+              aria-autocomplete="list"
+              aria-controls="wiki-search-results"
+              :aria-expanded="showResults"
+              :aria-activedescendant="showResults && hits.length ? 'wiki-hit-' + active : undefined"
+              @keydown="onKey"
+            >
+            <button v-if="query" class="search-clear" type="button" aria-label="検索をクリア" @click="query = ''; box?.focus()">×</button>
+            <button class="search-submit" type="button" @click="fullTextSearch">検索<span aria-hidden="true"> →</span></button>
+          </div>
+          <div v-if="showResults" class="search-results">
+            <div id="wiki-search-results" role="listbox" aria-label="ページの候補">
+              <a v-for="(hit, i) in hits" :id="'wiki-hit-' + i" :key="hit.url + hit.title" :href="withBase(hit.url)" role="option" tabindex="-1" :aria-selected="i === active" :class="{ on: i === active }" @mouseenter="active = i">
+                <span>{{ hit.title }}</span><span class="result-kind">{{ hit.kind }}</span>
+              </a>
+            </div>
+            <p v-if="indexFailed" class="search-message" role="status">候補を読み込めませんでした。本文検索をご利用ください。</p>
+            <p v-else-if="!index" class="search-message" role="status">検索データを読み込み中…</p>
+            <p v-else-if="!hits.length" class="search-message" role="status">「{{ query }}」に合う名前は見つかりませんでした。</p>
+            <button class="search-full" type="button" @click="fullTextSearch">本文も含めて探す <span aria-hidden="true">→</span></button>
+          </div>
+        </div>
+
+        <div id="home-intro" class="home-intro">
+          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path :d="ICONS.flag" /></svg>はじめての方へ</span>
+          <a v-for="link in introLinks" :key="link.link" :href="withBase(link.link)">{{ link.t }}</a>
+          <a v-if="stats.modVersion && stats.modVersion !== 'DQMVII'" class="home-version-link" :href="withBase('/guide/updates')">対応版 {{ stats.modVersion }}</a>
+        </div>
+
+        <div class="home-content">
+          <section id="all-categories" class="directory-section" aria-labelledby="directory-heading">
+            <h2 id="directory-heading" class="home-section-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path :d="ICONS.book" /></svg>攻略データ</h2>
+            <div class="category-directory">
+              <section v-for="category in catsReady" :id="'category-' + category.id" :key="category.id" class="directory-group" :class="'directory-group-' + category.id" :aria-labelledby="'category-heading-' + category.id">
+                <header class="directory-heading">
+                  <div class="directory-heading-copy">
+                    <h3 :id="'category-heading-' + category.id">{{ category.title }}</h3>
+                    <a class="directory-overview" :href="withBase(category.overview.link)">{{ category.overview.t }}<span aria-hidden="true"> →</span></a>
+                  </div>
+                  <span class="directory-art" :class="'directory-art-' + category.id" :style="categoryArtStyle" aria-hidden="true"></span>
+                </header>
+                <ul class="directory-links">
+                  <li v-for="item in category.items" :key="item.link"><a class="directory-link" :href="withBase(item.link)"><span>{{ item.t }}</span><span class="directory-arrow" aria-hidden="true">›</span></a></li>
+                </ul>
+              </section>
+            </div>
+          </section>
+
+          <section id="home-guides" class="home-guide-section" aria-labelledby="guide-heading">
+            <h2 id="guide-heading" class="home-section-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path :d="ICONS.pin" /></svg>遊び方ガイド</h2>
+            <ul class="home-guide-list"><li v-for="guide in guidePages" :key="guide.link"><a :href="withBase(guide.link)">{{ guide.t }}<span aria-hidden="true">›</span></a></li></ul>
+          </section>
+
+          <section class="purpose-section" aria-labelledby="purpose-heading">
+            <h2 id="purpose-heading" class="home-section-title">目的から探す</h2>
+            <ul class="purpose-list"><li v-for="question in questions" :key="question.q">{{ question.q }} <span aria-hidden="true">→</span> <a :href="withBase(question.link)">{{ question.a }}</a></li></ul>
+          </section>
+
+          <section id="home-about" class="contribute-section" aria-labelledby="contribute-heading">
+            <h2 id="contribute-heading" class="home-section-title">wikiについて</h2>
+            <p>情報はseesaa wikiに、誰でも書き込めます。このサイトでは、集まった情報を見やすく整えて載せています。</p>
+            <div class="contribute-links"><a :href="postUrl">seesaa wikiに書き込む →</a><a :href="withBase('/guide/contribute')">情報の送り方 →</a><a :href="withBase('/guide/updates')">MOD更新履歴 →</a></div>
+            <details id="wanted-pages" class="wanted-pages"><summary>情報を募集しているページ</summary><ul><li v-for="page in wanted" :key="page.cat + page.t"><span>{{ page.cat }}</span><a :href="withBase(page.link)">{{ page.t }}</a></li></ul></details>
+          </section>
+
+          <footer class="wiki-about"><p>このwikiは有志で制作しています。掲載情報は検証環境やバージョンによって異なる場合があります。</p><div class="wiki-metadata"><span v-for="item in meta" :key="item.label"><b>{{ item.label }}</b>{{ item.value }}</span></div></footer>
+        </div>
       </div>
-      <footer class="wiki-about"><p>このwikiは有志で制作しています。掲載情報は検証環境やバージョンによって異なる場合があります。</p><div class="wiki-metadata"><span v-for="m in meta" :key="m.label"><b>{{ m.label }}</b>{{ m.value }}</span></div></footer>
     </div>
   </main>
 </template>
