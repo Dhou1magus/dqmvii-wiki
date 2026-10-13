@@ -27,7 +27,7 @@
   --key-edge: #dce4ef;
   --key-edge-on: #244f7c;
   --vp-layout-max-width: min(1600px, 100vw);
-  --vp-sidebar-width: 260px;
+  --vp-sidebar-width: 290px;
 }
 .dark {
   --vp-c-bg: #090909;

@@ -185,6 +185,7 @@
 }
 @media (min-width: 960px) {
   .wiki-themed .VPNavBar.has-sidebar .title { background: var(--vp-sidebar-bg-color); }
+  .wiki-sidebar-collapsed .wiki-themed .VPNavBar.has-sidebar .title { background: var(--vp-nav-bg-color); }
 }
 .wiki-themed .VPNavBarTitle .title {
   color: var(--vp-c-text-1);
@@ -207,7 +208,7 @@
 .wiki-themed .VPSidebarItem.level-0 > .item > .text,
 .wiki-themed .VPSidebarItem.level-0 > .item > .link > .text {
   color: var(--vp-c-text-2);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 650;
   letter-spacing: .01em;
 }
@@ -227,15 +228,15 @@
 .wiki-themed .VPSidebarItem.level-1 > .item > .link { padding: 1px 6px; }
 .wiki-themed .VPSidebarItem.level-1 .link .text {
   color: var(--vp-c-text-2);
-  font-size: 13px;
-  line-height: 1.65;
+  font-size: 14.5px;
+  line-height: 1.7;
 }
 .wiki-themed .VPSidebarItem.level-1.is-active > .item {
   background: var(--article-active);
 }
 .wiki-themed .VPSidebarItem.level-1 > .items { margin: 1px 0 4px 10px; padding-left: 10px; }
 .wiki-themed .VPSidebarItem.level-2 > .item > .link { padding: 0 6px; }
-.wiki-themed .VPSidebarItem.level-1 .VPSidebarItem.level-2 .link .text { font-size: 12.5px; line-height: 1.7; }
+.wiki-themed .VPSidebarItem.level-1 .VPSidebarItem.level-2 .link .text { font-size: 13.5px; line-height: 1.7; }
 .wiki-themed .VPSidebarItem.level-2.is-active > .item { background: var(--article-active); }
 .wiki-themed .VPSidebarItem.is-active > .item > .link > .text {
   color: var(--article-accent);
