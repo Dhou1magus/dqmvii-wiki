@@ -161,6 +161,7 @@ export function setupSortableTables(): void {
     const tbody = table.tBodies[0]
     const headers = [...(table.tHead?.rows[0]?.cells ?? [])] as HTMLTableCellElement[]
     if (!tbody || !headers.length) continue
+    if (table.querySelector('[colspan], [rowspan]')) continue
 
     markNoWrapColumns(table)
     markStickyColumns(table)

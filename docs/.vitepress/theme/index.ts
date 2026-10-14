@@ -56,15 +56,34 @@ export default {
       table.classList.remove('fit')
       if (table.scrollWidth > table.clientWidth + 1) table.classList.add('fit')
     })
+    const openFoldsForHash = () => {
+      let id = ''
+      try {
+        id = decodeURIComponent(location.hash.slice(1))
+      } catch {
+        return
+      }
+      const target = id ? document.getElementById(id) : null
+      if (!target) return
+      let opened = false
+      for (let fold = target.closest('details'); fold; fold = fold.parentElement?.closest('details') ?? null) {
+        if (!fold.open) {
+          fold.open = true
+          opened = true
+        }
+      }
+      if (opened) target.scrollIntoView()
+    }
     let fitFrame = 0
     const queueFit = () => {
       cancelAnimationFrame(fitFrame)
       fitFrame = requestAnimationFrame(fitTables)
     }
-    const decorate = () => { setupSortableTables(); setupTabs(); markFaqTags(); setupDexFilter(kinds()); markBlanks(); markEmptyTables(); queueFit() }
+    const decorate = () => { setupSortableTables(); setupTabs(); markFaqTags(); setupDexFilter(kinds()); markBlanks(); markEmptyTables(); queueFit(); openFoldsForHash() }
     onMounted(() => {
       decorate()
       window.addEventListener('resize', queueFit)
+      window.addEventListener('hashchange', openFoldsForHash)
       document.addEventListener('click', (event) => {
         if ((event.target as Element | null)?.closest?.('.dq-tab')) queueFit()
       })

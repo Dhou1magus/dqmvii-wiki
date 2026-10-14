@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 import { readdirSync, statSync, readFileSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { isEmptyItemPage, seoHead } from './seo.mts'
+import { seesaaSyntax } from './seesaa-syntax.mts'
 
 const MOD_VERSION = ''
 
@@ -324,6 +325,8 @@ export default defineConfig({
         }
         state.tokens = out
       })
+
+      md.use(seesaaSyntax)
     }
   },
 
