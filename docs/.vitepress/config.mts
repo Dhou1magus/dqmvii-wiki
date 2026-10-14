@@ -71,7 +71,7 @@ const GITHUB_USER = 'Dhou1magus'
 const REPO_NAME   = 'dqmvii-wiki'
 const SITE_URL    = `https://${GITHUB_USER}.github.io/${REPO_NAME}/`
 const SITE_DESCRIPTION = 'MinecraftのドラクエMOD「DQMVII」の攻略wiki。モンスター、装備・アイテム、職業、呪文・特技などの攻略情報をまとめています。'
-const GOOGLE_SITE_VERIFICATION = ''
+const GOOGLE_SITE_VERIFICATION = 'p8w8KACvnxeScOOw_oHpl5N28ToqinIdWl_WJYX87lg'
 
 function itemSource(relativePath: string): string {
   return /^items\/[^/]+\.md$/.test(relativePath)
