@@ -400,7 +400,10 @@ export default defineConfig({
           { text: 'コロシアム', link: '/play/colosseum' },
           { text: 'マイホームの島', link: '/play/home' },
           { text: '素材・鍛冶・錬金', link: '/play/smithing' },
-          { text: '釣り・メダル・町の遊び', link: '/play/town-fun' },
+          { text: '福引', link: '/play/fukubiki' },
+          { text: 'ちいさなメダル', link: '/play/medals' },
+          { text: '釣り', link: '/play/fishing' },
+          { text: '町のイベントと依頼掲示板', link: '/play/town-events' },
           { text: '町の物語とクエスト', link: '/play/story' },
           { text: '実績と称号', link: '/play/achievements' }
         ]

@@ -1,6 +1,6 @@
-const RANKS = [1, 2, 3, 4, 5, 6, 7]
 export const DEX_SPECIES = ['スライム', 'ドラゴン', '自然', '魔獣', '物質', '悪魔', 'ゾンビ', 'メタル', '特殊']
 const KINDS = ['雑魚', '転生', 'ボス', 'コインボス']
+const NAME_HEADERS = ['モンスター', '名前']
 const HIDE_CLASS = 'dex-hide'
 
 export type Kinds = Record<string, string[]>
@@ -32,15 +32,15 @@ function rankOf(row: HTMLTableRowElement, rankCol: number): number | null {
   return Number.isInteger(n) && n >= 1 ? n : null
 }
 
-function columnIndex(headers: HTMLTableCellElement[], text: string): number {
-  return headers.findIndex((th) => th.textContent?.trim() === text)
+function columnIndex(headers: HTMLTableCellElement[], ...texts: string[]): number {
+  return headers.findIndex((th) => texts.includes(th.textContent?.trim() ?? ''))
 }
 
 function buildBar(table: HTMLTableElement, kinds: Kinds): HTMLElement | null {
   const headers = [...(table.tHead?.rows[0]?.cells ?? [])] as HTMLTableCellElement[]
   const rows = [...(table.tBodies[0]?.rows ?? [])]
   const rankCol = columnIndex(headers, 'ランク')
-  const nameCol = columnIndex(headers, 'モンスター')
+  const nameCol = columnIndex(headers, ...NAME_HEADERS)
   const speciesCol = columnIndex(headers, '系統')
   if (rankCol < 0 || nameCol < 0 || !rows.length) return null
 
@@ -52,7 +52,10 @@ function buildBar(table: HTMLTableElement, kinds: Kinds): HTMLElement | null {
     species.set(r, speciesOf(r, speciesCol))
     kind.set(r, kindOf(r, nameCol, kinds))
   }
-  const shownSpecies = speciesCol < 0 ? [] : DEX_SPECIES.filter((s) => [...species.values()].includes(s))
+  const present = [...new Set([...species.values()].filter(Boolean))]
+  const shownSpecies = speciesCol < 0 ? [] : [...DEX_SPECIES.filter((s) => present.includes(s)), ...present.filter((s) => !DEX_SPECIES.includes(s))]
+  const shownRanks = [...new Set([...rank.values()].filter((n): n is number => n !== null))].sort((a, b) => a - b)
+  const hasKinds = KINDS.some((k) => k !== '雑魚' && (kinds[k] ?? []).length > 0)
 
   const selectedRanks = new Set<number>()
   const selectedSpecies = new Set<string>()
@@ -100,7 +103,7 @@ function buildBar(table: HTMLTableElement, kinds: Kinds): HTMLElement | null {
 
   const rankWrap = document.createElement('span')
   rankWrap.className = 'grp'
-  for (const n of RANKS) {
+  for (const n of shownRanks) {
     const b = makeButton(`ランク${n}`, 'rank')
     b.dataset.value = String(n)
     b.addEventListener('click', () => {
@@ -140,7 +143,7 @@ function buildBar(table: HTMLTableElement, kinds: Kinds): HTMLElement | null {
     apply()
   })
 
-  bar.append(rankWrap, speciesWrap, kindWrap, all)
+  bar.append(rankWrap, speciesWrap, ...(hasKinds ? [kindWrap] : []), all)
   table.insertAdjacentElement('afterend', empty)
   apply()
   return bar

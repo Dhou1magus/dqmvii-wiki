@@ -386,6 +386,22 @@ function mergeCellsRule(state: State): void {
   state.tokens = tokens.filter((_, k) => !drop.has(k) && !drop.has(k - 1) && !drop.has(k - 2))
 }
 
+function headlessTablesRule(state: State): void {
+  const tokens: Tok[] = state.tokens
+  const drop = new Set<number>()
+  for (let i = 0; i < tokens.length; i++) {
+    if (tokens[i].type !== 'thead_open') continue
+    let j = i + 1
+    let blank = true
+    for (; j < tokens.length && tokens[j].type !== 'thead_close'; j++) {
+      if (tokens[j].type === 'inline' && tokens[j].content.trim()) blank = false
+    }
+    if (blank && j < tokens.length) for (let k = i; k <= j; k++) drop.add(k)
+    i = j
+  }
+  if (drop.size) state.tokens = tokens.filter((_, k) => !drop.has(k))
+}
+
 export function seesaaSyntax(md: Md): void {
   md.disable('strikethrough')
   md.inline.ruler.at('text', textRule)
@@ -399,6 +415,7 @@ export function seesaaSyntax(md: Md): void {
   })
   md.core.ruler.push('dq_notes', notesRule)
   md.core.ruler.push('dq_merge_cells', mergeCellsRule)
+  md.core.ruler.push('dq_headless_tables', headlessTablesRule)
 
   const r = md.renderer.rules
   r.dq_fold_open = (tokens: Tok[], idx: number) => `<details class="dq-fold"${tokens[idx].markup === '-' ? ' open' : ''}>\n`

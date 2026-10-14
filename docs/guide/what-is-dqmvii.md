@@ -22,9 +22,11 @@ MinecraftにドラクエのようなRPGの遊びを足すMOD「DQM」シリー�
 | コロシアムとマスターランク | [コロシアム](/play/colosseum) |
 | マイホームの島（鍛冶・農業・建築） | [マイホームの島](/play/home) |
 | 素材集め・鍛冶・錬金 | [素材・鍛冶・錬金](/play/smithing) |
-| 釣り・小さなメダル・カジノ | [釣り・メダル・町の遊び](/play/town-fun) |
+| 福引 | [福引](/play/fukubiki) |
+| ちいさなメダル | [ちいさなメダル](/play/medals) |
+| 釣り | [釣り](/play/fishing) |
 | 町の物語とクエスト | [町の物語とクエスト](/play/story) |
-| 天候と空模様 | [冒険のきほん](/play/basics#weather) |
+| 天候と空模様 | [冒険のきほん](/play/basics) |
 | 実績と称号 | [実績と称号](/play/achievements) |
 
 ## 動作環境

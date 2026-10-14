@@ -6,8 +6,8 @@ pageClass: wide-page sortable-list
 
 # 素材一覧
 
-| 画像 | 素材 | 入手方法 |
-| :--: | --- | --- |
+| 名前 | 入手方法 | 使いみち |
+| --- | --- | --- |
 
 ## 関連ページ {.ignore-header}
 

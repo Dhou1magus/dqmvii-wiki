@@ -83,7 +83,7 @@ const cats = computed(() => [
       { t: 'ダンジョンと防衛戦', link: '/play/dungeons' },
       { t: 'コロシアム', link: '/play/colosseum' },
       { t: 'マイホームの島', link: '/play/home' },
-      { t: '釣り・メダル・町の遊び', link: '/play/town-fun' }
+      { t: '釣り', link: '/play/fishing' }
     ]
   },
   {
@@ -116,9 +116,9 @@ const introLinks = computed(() => cats.value.find((category) => category.id === 
 const categoryArtStyle = computed(() => ({ backgroundImage: `url("${withBase('/images/home/dq-category-atlas.webp')}")` }))
 const wanted = [
   { cat: 'モンスター', t: 'モンスター図鑑', link: '/monsters/' },
-  { cat: 'アイテム', t: 'アイテム一覧', link: '/items/' },
-  { cat: '職業', t: '職業一覧', link: '/jobs/' },
+  { cat: 'モンスター', t: '配合表', link: '/monsters/haigou' },
   { cat: '仲間', t: 'スキル一覧（仲間）', link: '/monsters/skills' },
+  { cat: '職業', t: '職業とスキルパネル', link: '/play/skill-panel' },
   { cat: '世界', t: '世界と旅の扉', link: '/play/worlds' },
   { cat: 'ダンジョン', t: 'ダンジョンと防衛戦', link: '/play/dungeons' }
 ]
