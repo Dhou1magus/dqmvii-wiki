@@ -11,6 +11,8 @@ import SidebarToggle from './SidebarToggle.vue'
 import MobileToc from './MobileToc.vue'
 import TopPage from './TopPage.vue'
 import ArticleHeader from './ArticleHeader.vue'
+import ShareButtons from './ShareButtons.vue'
+import BackToTop from './BackToTop.vue'
 import { articleCategory } from './article-category'
 import './custom.css'
 import './button-feedback.css'
@@ -33,7 +35,9 @@ export default {
       'nav-bar-content-after': () => h(ThemeSwitch),
       'nav-screen-content-after': () => h(ThemeSwitch),
       'doc-before': () => h(Fragment, null, [h(ArticleHeader), h(MobileToc)]),
-      'page-top': () => h(TopPage)
+      'doc-footer-before': () => h(ShareButtons),
+      'page-top': () => h(TopPage),
+      'layout-bottom': () => h(BackToTop)
     })
   },
   setup() {

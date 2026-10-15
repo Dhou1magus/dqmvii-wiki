@@ -414,8 +414,6 @@ table[data-sortable] th.dq-rank::after { right: 50%; top: auto; bottom: 3px; mar
   .VPNavBar .theme-switch { display: none; }
 }
 
-.VPDocFooter .edit-link { display: none; }
-
 .page-actions {
   display: flex;
   flex-wrap: wrap;

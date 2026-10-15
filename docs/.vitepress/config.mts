@@ -1,8 +1,10 @@
 import { defineConfig } from 'vitepress'
-import { readdirSync, statSync, readFileSync, existsSync } from 'node:fs'
+import { readdirSync, statSync, readFileSync, existsSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { isEmptyItemPage, seoHead } from './seo.mts'
+import { canonicalUrl, isEmptyItemPage, seoHead } from './seo.mts'
 import { seesaaSyntax } from './seesaa-syntax.mts'
+import { recentPages, rssFeed } from './recent.mts'
+import { articleCategory } from './theme/article-category'
 
 const MOD_VERSION = ''
 
@@ -72,6 +74,57 @@ const REPO_NAME   = 'dqmvii-wiki'
 const SITE_URL    = `https://${GITHUB_USER}.github.io/${REPO_NAME}/`
 const SITE_DESCRIPTION = 'MinecraftのドラクエMOD「DQMVII」の攻略wiki。モンスター、装備・アイテム、職業、呪文・特技などの攻略情報をまとめています。'
 const GOOGLE_SITE_VERIFICATION = 'p8w8KACvnxeScOOw_oHpl5N28ToqinIdWl_WJYX87lg'
+const SITE_TITLE = 'DQMVII 攻略wiki'
+const SITE_HOME = new URL(SITE_URL).href
+const OGP_IMAGE = new URL('images/ogp.jpg', SITE_HOME).href
+
+function seesaaEditLinks(): Record<string, string> {
+  try {
+    const state = JSON.parse(readFileSync('scripts/data/seesaa-pages.json', 'utf8')) as Record<string, { id?: unknown; path?: unknown }>
+    const out: Record<string, string> = {}
+    for (const { id, path } of Object.values(state)) {
+      if (typeof path !== 'string' || !path || path === 'guide/contribute' || !Number.isInteger(id)) continue
+      out[path.endsWith('/') ? `${path}index.md` : `${path}.md`] = `https://seesaawiki.jp/dqmvii-game-info/e/edit?id=${id}`
+    }
+    return out
+  } catch (e) {
+    console.warn(`注意: scripts/data/seesaa-pages.json が読めません（${(e as Error).message}）。seesaa wikiで編集するリンクを出しません`)
+    return {}
+  }
+}
+
+const SEESAA_EDIT = seesaaEditLinks()
+
+function jsonLd(value: unknown): string {
+  return JSON.stringify(value).replace(/[<>]/g, '')
+}
+
+function structuredData(relativePath: string, title: string): string | null {
+  if (relativePath === '404.md') return null
+  if (relativePath === 'index.md') {
+    return jsonLd({
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: SITE_TITLE,
+      url: SITE_HOME,
+      inLanguage: 'ja',
+      description: SITE_DESCRIPTION
+    })
+  }
+  const category = articleCategory(relativePath)
+  const pageUrl = canonicalUrl(relativePath, SITE_HOME)
+  const categoryUrl = new URL(category.link.slice(1), SITE_HOME).href
+  const trail = [
+    { name: 'トップページ', item: SITE_HOME },
+    { name: category.title, item: categoryUrl }
+  ]
+  if (pageUrl !== categoryUrl) trail.push({ name: title || category.title, item: pageUrl })
+  return jsonLd({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: trail.map((step, i) => ({ '@type': 'ListItem', position: i + 1, name: step.name, item: step.item }))
+  })
+}
 
 function itemSource(relativePath: string): string {
   return /^items\/[^/]+\.md$/.test(relativePath)
@@ -161,9 +214,26 @@ export default defineConfig({
     }
     pageData.frontmatter.head = [
       ...seoHead(pageData.relativePath, SITE_URL, itemSource(pageData.relativePath)),
-      ['meta', { property: 'og:title', content: pageData.title || 'DQMVII 攻略wiki' }],
+      ['meta', { property: 'og:title', content: pageData.title || SITE_TITLE }],
       ['meta', { property: 'og:description', content: pageData.description || SITE_DESCRIPTION }]
     ]
+    const ld = structuredData(pageData.relativePath, pageData.title)
+    if (ld) pageData.frontmatter.head.push(['script', { type: 'application/ld+json' }, ld])
+    const edit = SEESAA_EDIT[pageData.relativePath]
+    if (edit) {
+      pageData.frontmatter.seesaaEdit = edit
+    } else {
+      delete pageData.frontmatter.seesaaEdit
+      pageData.frontmatter.editLink = false
+    }
+  },
+
+  buildEnd(siteConfig) {
+    const pages = recentPages('docs').slice(0, 20)
+    writeFileSync(
+      join(siteConfig.outDir, 'feed.xml'),
+      rssFeed(pages, { url: SITE_HOME, title: SITE_TITLE, description: SITE_DESCRIPTION })
+    )
   },
 
   markdown: {
@@ -335,10 +405,19 @@ export default defineConfig({
       ? [['meta', { name: 'google-site-verification', content: GOOGLE_SITE_VERIFICATION }] as ['meta', Record<string, string>]]
       : []),
     ['meta', { name: 'theme-color', content: '#0F7A4A' }],
+    ['link', { rel: 'icon', type: 'image/png', sizes: '32x32', href: `/${REPO_NAME}/favicon-32.png` }],
+    ['link', { rel: 'icon', type: 'image/png', sizes: '192x192', href: `/${REPO_NAME}/icon-192.png` }],
+    ['link', { rel: 'apple-touch-icon', sizes: '180x180', href: `/${REPO_NAME}/apple-touch-icon.png` }],
+    ['link', { rel: 'alternate', type: 'application/rss+xml', title: `${SITE_TITLE}の更新`, href: new URL('feed.xml', SITE_HOME).href }],
     ['meta', { property: 'og:type', content: 'website' }],
-    ['meta', { property: 'og:site_name', content: 'DQMVII 攻略wiki' }],
+    ['meta', { property: 'og:site_name', content: SITE_TITLE }],
     ['meta', { property: 'og:locale', content: 'ja_JP' }],
+    ['meta', { property: 'og:image', content: OGP_IMAGE }],
+    ['meta', { property: 'og:image:width', content: '1200' }],
+    ['meta', { property: 'og:image:height', content: '630' }],
+    ['meta', { property: 'og:image:alt', content: `${SITE_TITLE}（MinecraftのドラクエMOD「DQMVII」の攻略情報）` }],
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:image', content: OGP_IMAGE }],
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
     ['link', {
@@ -349,6 +428,7 @@ export default defineConfig({
 
   themeConfig: {
     siteStats: SITE_STATS,
+    siteUrl: SITE_HOME,
     monsterKinds: monsterKinds(),
 
     nav: [
@@ -502,6 +582,19 @@ export default defineConfig({
     lastUpdated: {
       text: '最終更新',
       formatOptions: { dateStyle: 'medium', timeStyle: 'short', forceLocale: true }
+    },
+
+    editLink: {
+      pattern: ({ frontmatter }) => frontmatter.seesaaEdit,
+      text: 'seesaa wikiでこのページを編集する'
+    },
+
+    notFound: {
+      code: '404',
+      title: 'ページが見つかりません',
+      quote: 'ページの場所が変わったか、なくなったのかもしれません。トップページや検索から探してみてください。',
+      linkLabel: 'トップページへ戻る',
+      linkText: 'トップページへ戻る'
     },
 
     outline: { level: [2, 3], label: 'このページの目次' },

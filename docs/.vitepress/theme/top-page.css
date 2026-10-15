@@ -275,6 +275,15 @@
 .home-guide-list li { min-width: 0; border-bottom: 1px solid var(--home-line); }
 .home-guide-list a { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 40px; padding: 9px 0; font-size: 14px; line-height: 1.65; }
 .home-guide-list a > span { flex-shrink: 0; color: var(--home-subtle); }
+.recent-section { scroll-margin-top: 90px; }
+.recent-list { display: grid; grid-auto-flow: column; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(3, auto); gap: 0 22px; padding: 0; margin: 0; list-style: none; }
+.recent-list li { min-width: 0; border-bottom: 1px solid var(--home-line); }
+.recent-list a { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; padding: 9px 0; font-size: 14px; line-height: 1.65; }
+.recent-title { min-width: 0; overflow-wrap: anywhere; }
+.recent-list time { flex-shrink: 0; color: var(--home-subtle); font-size: 12px; font-variant-numeric: tabular-nums; }
+.recent-feed { margin: 12px 0 0; font-size: 13px; }
+.recent-feed a { display: inline-flex; align-items: center; gap: 7px; min-height: 32px; }
+.recent-feed a::before { content: "RSS"; padding: 0 5px; border-radius: 4px; background: #e8710a; color: #fff; font-size: 10px; font-weight: 800; line-height: 17px; letter-spacing: .02em; }
 .purpose-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 22px; list-style: none; padding: 0; margin: 0; font-size: 14px; }
 .purpose-list li { min-width: 0; border-bottom: 1px solid var(--home-line); }
 .purpose-list a { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; padding: 9px 0; line-height: 1.65; }
@@ -316,6 +325,7 @@
 @media (max-width: 780px) {
   .category-directory { grid-template-columns: 1fr; gap: 12px; }
   .purpose-list { grid-template-columns: 1fr; gap: 0; }
+  .recent-list { grid-auto-flow: row; grid-template-columns: 1fr; grid-template-rows: none; gap: 0; }
 }
 @media (max-width: 767px) {
   .home-main { padding: 20px 20px 40px; }
@@ -347,7 +357,7 @@
   .wiki-metadata { font-size: 11px; }
 }
 @media (pointer: coarse) {
-  .wiki-home :is(.search-submit, .search-clear, .directory-link, .directory-overview, .home-guide-list a, .search-results [role="option"], .wanted-pages summary) { min-height: 44px; }
+  .wiki-home :is(.search-submit, .search-clear, .directory-link, .directory-overview, .home-guide-list a, .recent-list a, .recent-feed a, .search-results [role="option"], .wanted-pages summary) { min-height: 44px; }
   .home-intro > a { display: flex; align-items: center; min-height: 44px; }
 }
 @media (prefers-reduced-motion: reduce) {

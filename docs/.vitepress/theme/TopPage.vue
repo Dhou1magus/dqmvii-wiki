@@ -2,6 +2,7 @@
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useData, withBase } from 'vitepress'
 import { SEESAA_URL } from './links'
+import { data as recentUpdates } from './recent.data'
 import './top-page.css'
 
 const { frontmatter, theme } = useData()
@@ -26,7 +27,8 @@ const ICONS = {
   shield: 'M12 3l8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM12 7v10M8 11h8',
   ring: 'M9 3h6l2 3-5 4-5-4zM7 9a7 7 0 1 0 10 0',
   flag: 'M6 21V4M6 5h11l-2 3.5L17 12H6',
-  help: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9.3A2.5 2.5 0 1 1 12 12c0 1-.001 1.2 0 2M12 17.2v.01'
+  help: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9.3A2.5 2.5 0 1 1 12 12c0 1-.001 1.2 0 2M12 17.2v.01',
+  clock: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7.5V12l3 2'
 }
 
 const questions = [
@@ -323,6 +325,12 @@ async function onKey(event) {
                 </ul>
               </section>
             </div>
+          </section>
+
+          <section v-if="recentUpdates.length" id="home-recent" class="recent-section" aria-labelledby="recent-heading">
+            <h2 id="recent-heading" class="home-section-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path :d="ICONS.clock" /></svg>最近更新されたページ</h2>
+            <ul class="recent-list"><li v-for="item in recentUpdates" :key="item.url"><a :href="withBase(item.url)"><span class="recent-title">{{ item.title }}</span><time :datetime="item.iso">{{ item.date }}</time></a></li></ul>
+            <p class="recent-feed"><a :href="withBase('/feed.xml')" type="application/rss+xml">RSSで更新を受け取る</a></p>
           </section>
 
           <section id="home-guides" class="home-guide-section" aria-labelledby="guide-heading">
