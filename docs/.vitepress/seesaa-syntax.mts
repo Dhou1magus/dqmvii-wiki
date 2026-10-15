@@ -22,7 +22,7 @@ const WORD = /^[a-z]{3,20}$/i
 const ANCHOR_ID = /^[A-Za-z0-9_\-:.]{1,64}$/
 const FOLD_OPEN = /^\[([+-])\](.*)$/
 const PRE_OPEN = /^=\|([^|]*)\|$/
-const CONTENTS = /^#contents(?:\(\d*\))?$/
+const CONTENTS = /^#contents(?:\((\d*)\))?$/
 const AMP = /^&([a-zA-Z]+)\(([^()\n]*)\)/
 
 function safeColor(value: string): string | null {
@@ -101,9 +101,59 @@ function preRule(state: State, startLine: number, endLine: number, silent: boole
 
 function contentsRule(state: State, startLine: number, _endLine: number, silent: boolean): boolean {
   if (indented(state, startLine)) return false
-  if (!CONTENTS.test(lineText(state, startLine).trim())) return false
-  if (!silent) state.line = startLine + 1
+  const m = CONTENTS.exec(lineText(state, startLine).trim())
+  if (!m) return false
+  if (silent) return true
+  const n = Number(m[1])
+  const token = state.push('dq_contents', 'nav', 0)
+  token.block = true
+  token.map = [startLine, startLine + 1]
+  token.meta = { depth: n === 1 || n === 2 ? n : 3 }
+  state.line = startLine + 1
   return true
+}
+
+function headingText(token: Tok | undefined): string {
+  const out: string[] = []
+  const walk = (list: Tok[]) => {
+    for (const c of list) {
+      if (c.type === 'text' || c.type === 'code_inline') out.push(c.content)
+      if (c.children) walk(c.children)
+    }
+  }
+  walk(token?.children ?? [])
+  return out.join('').trim()
+}
+
+function renderContents(tokens: Tok[], idx: number): string {
+  const max: number = tokens[idx].meta.depth
+  const items: { depth: number; id: string; text: string }[] = []
+  for (let i = 0; i < tokens.length; i++) {
+    const t = tokens[i]
+    if (t.type !== 'heading_open') continue
+    const depth = Number(t.tag.slice(1)) - 1
+    if (depth < 1 || depth > max) continue
+    if ((t.attrGet('class') ?? '').split(/\s+/).includes('ignore-header')) continue
+    const id = t.attrGet('id')
+    const text = headingText(tokens[i + 1])
+    if (id && text) items.push({ depth, id, text })
+  }
+  if (!items.length) return ''
+  let html = '<nav class="dq-contents" aria-label="目次">'
+  let open = 0
+  for (const item of items) {
+    const depth = Math.min(item.depth, open + 1)
+    if (depth > open) {
+      html += '<ul>'
+      open = depth
+    } else {
+      html += '</li>'
+      for (; open > depth; open--) html += '</ul></li>'
+    }
+    html += `<li><a href="#${esc(item.id)}">${esc(item.text)}</a>`
+  }
+  for (; open > 0; open--) html += '</li></ul>'
+  return html + '</nav>\n'
 }
 
 function textRule(state: State, silent: boolean): boolean {
@@ -425,6 +475,7 @@ export function seesaaSyntax(md: Md): void {
   r.dq_fold_body_open = () => '<div class="dq-fold-body">\n'
   r.dq_fold_body_close = () => '</div>\n'
   r.dq_fold_close = () => '</details>\n'
+  r.dq_contents = (tokens: Tok[], idx: number) => renderContents(tokens, idx)
   r.dq_note_ref = (tokens: Tok[], idx: number) => {
     const n = tokens[idx].meta.n
     return `<sup class="dq-note-ref"><a id="dq-note-ref-${n}" href="#dq-note-${n}" aria-label="注釈${n}">*${n}</a></sup>`

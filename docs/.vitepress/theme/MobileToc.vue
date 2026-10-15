@@ -19,7 +19,9 @@ const headers = computed(() => {
 const show = computed(() => headers.value.length >= 2 || headers.value.some(item => item.children.length > 0))
 
 const target = ref<HTMLElement | null>(null)
+const inlineContents = ref(false)
 function placeSlot() {
+  inlineContents.value = !!document.querySelector('.VPDoc .vp-doc .dq-contents')
   const title = document.querySelector('.VPDoc .vp-doc h1')
   if (!title) {
     target.value = null
@@ -38,7 +40,7 @@ watch(() => route.path, () => nextTick(placeSlot), { flush: 'post' })
 </script>
 
 <template>
-  <Teleport v-if="target && show" :to="target">
+  <Teleport v-if="target && show && !inlineContents" :to="target">
     <details :key="route.path" class="mobile-toc">
       <summary>このページの目次</summary>
       <nav aria-label="このページの目次" class="mobile-toc-links">
