@@ -23,7 +23,10 @@ const ANCHOR_ID = /^[A-Za-z0-9_\-:.]{1,64}$/
 const FOLD_OPEN = /^\[([+-])\](.*)$/
 const PRE_OPEN = /^=\|([^|]*)\|$/
 const CONTENTS = /^#contents(?:\((\d*)\))?$/
+const DL = /^:(.*?)\|(.*)$/
 const AMP = /^&([a-zA-Z]+)\(([^()\n]*)\)/
+const EMBED_KIND = /^[a-z]{1,20}$/
+const EMBED_HREF = /^(?:https?:\/\/[^\s"<>]+|\/(?!\/)[^\s"<>]*|#[^\s"<>]*)$/i
 
 function safeColor(value: string): string | null {
   const v = value.trim()
@@ -85,17 +88,61 @@ function foldRule(state: State, startLine: number, endLine: number, silent: bool
 
 function preRule(state: State, startLine: number, endLine: number, silent: boolean): boolean {
   if (indented(state, startLine)) return false
-  if (!PRE_OPEN.test(lineText(state, startLine).trim())) return false
+  const m = PRE_OPEN.exec(lineText(state, startLine).trim())
+  if (!m) return false
   let line = startLine + 1
   while (line < endLine && lineText(state, line).trim() !== '||=') line++
   if (line >= endLine) return false
   if (silent) return true
-  const token = state.push('fence', 'code', 0)
-  token.info = 'text'
-  token.markup = '```'
+  const token = state.push('dq_pre', 'pre', 0)
+  token.info = m[1].replace(/\s+/g, '').toLowerCase()
   token.content = state.getLines(startLine + 1, line, state.sCount[startLine], true)
   token.map = [startLine, line + 1]
   state.line = line + 1
+  return true
+}
+
+function renderPre(tokens: Tok[], idx: number): string {
+  const kind: string = tokens[idx].info
+  const body = esc(tokens[idx].content.replace(/\n$/, ''))
+  if (kind === '(box=textarea)') {
+    const rows = Math.min(20, Math.max(2, body.split('\n').length + 1))
+    return `<textarea class="dq-pre dq-pre-textarea" readonly rows="${rows}" aria-label="テキスト">${body}</textarea>\n`
+  }
+  if (kind === '(box=div)') return `<div class="dq-pre dq-pre-div">${body}</div>\n`
+  const extra = kind === 'box' ? ' dq-pre-box'
+    : kind === 'aa' ? ' dq-pre-aa'
+    : kind === 'aas' ? ' dq-pre-aa dq-pre-small'
+    : kind ? ' dq-pre-code' : ''
+  return `<pre class="dq-pre${extra}"><code>${body}</code></pre>\n`
+}
+
+function dlRule(state: State, startLine: number, endLine: number, silent: boolean): boolean {
+  if (indented(state, startLine)) return false
+  if (!DL.test(lineText(state, startLine))) return false
+  if (silent) return true
+  const items: [string, string, number][] = []
+  let line = startLine
+  for (; line < endLine && !indented(state, line); line++) {
+    const m = DL.exec(lineText(state, line))
+    if (!m) break
+    items.push([m[1].trim(), m[2].trim(), line])
+  }
+  state.push('dq_dl_open', 'dl', 1).map = [startLine, line]
+  const part = (type: string, tag: string, content: string, at: number) => {
+    state.push(type + '_open', tag, 1)
+    const inline = state.push('inline', '', 0)
+    inline.content = content
+    inline.map = [at, at + 1]
+    inline.children = []
+    state.push(type + '_close', tag, -1)
+  }
+  for (const [term, desc, at] of items) {
+    part('dq_dt', 'dt', term, at)
+    part('dq_dd', 'dd', desc, at)
+  }
+  state.push('dq_dl_close', 'dl', -1)
+  state.line = line
   return true
 }
 
@@ -300,13 +347,61 @@ function amp(state: State, silent: boolean, pos: number, end: number): boolean {
     return wrap(state, silent, start, brace, after,
       () => { state.push('dq_sup_open', 'sup', 1) }, closeTag(state, 'dq_sup_close', 'sup'))
   }
+  if (name === 'sub') {
+    return wrap(state, silent, start, brace, after,
+      () => { state.push('dq_sub_open', 'sub', 1) }, closeTag(state, 'dq_sub_close', 'sub'))
+  }
   if (name === 'ruby') {
     if (!arg) return false
     return wrap(state, silent, start, brace, after,
       () => { state.push('dq_ruby_open', 'ruby', 1) },
       () => {
-        state.push('html_inline', '', 0).content = `<rp>(</rp><rt>${esc(arg)}</rt><rp>)</rp>`
+        state.push('html_inline', '', 0).content = `<rt>${esc(arg)}</rt>`
         state.push('dq_ruby_close', 'ruby', -1)
+      })
+  }
+  if (name === 'dqlink') {
+    const comma = arg.indexOf(',')
+    const kind = arg.slice(0, comma).trim()
+    const href = arg.slice(comma + 1).trim()
+    const label = src.slice(start, brace).trim()
+    if (comma < 1 || !EMBED_KIND.test(kind) || !EMBED_HREF.test(href) || !label) return false
+    if (!silent) {
+      state.push('link_open', 'a', 1).attrs = [
+        ['href', href], ['class', `dq-embed dq-embed-${kind}`], ['aria-label', label], ['data-label', label]
+      ]
+      state.push('html_inline', '', 0).content = '<span class="dq-embed-icon" aria-hidden="true"></span>'
+      state.push('link_close', 'a', -1)
+    }
+    state.pos = after
+    return true
+  }
+  if (name === 'dqtags') {
+    const names = src.slice(start, brace).split(/\s+/).filter(Boolean)
+    if (!names.length) return false
+    if (!silent) {
+      state.push('dq_span_open', 'span', 1).attrs = [['class', 'dq-tags']]
+      for (const tag of names) {
+        state.push('dq_span_open', 'span', 1).attrs = [['class', 'dq-tag']]
+        state.push('text', '', 0).content = tag
+        state.push('dq_span_close', 'span', -1)
+      }
+      state.push('dq_span_close', 'span', -1)
+    }
+    state.pos = after
+    return true
+  }
+  if (name === 'fukidashi') {
+    const side = arg.toLowerCase() === 'right' ? 'right' : 'left'
+    return wrap(state, silent, start, brace, after,
+      () => {
+        state.push('dq_span_open', 'span', 1).attrs = [['class', `dq-balloon dq-balloon-${side}`]]
+        state.push('html_inline', '', 0).content = '<span class="dq-balloon-icon" aria-hidden="true"></span>'
+        state.push('dq_span_open', 'span', 1).attrs = [['class', 'dq-balloon-text']]
+      },
+      () => {
+        state.push('dq_span_close', 'span', -1)
+        state.push('dq_span_close', 'span', -1)
       })
   }
   if (name === 'align') {
@@ -359,18 +454,18 @@ function notesRule(state: State): void {
     t.content = content
     return t
   }
-  const out: Tok[] = [html('<section class="dq-notes" aria-label="注釈"><p class="dq-notes-title">注釈</p><ol>\n')]
+  const out: Tok[] = [html('<section class="dq-notes" aria-label="注釈"><ul>\n')]
   notes.slice().forEach((text, k) => {
     const n = k + 1
-    out.push(html(`<li id="dq-note-${n}">`))
+    out.push(html(`<li id="dq-note-${n}"><a class="dq-note-num" href="#dq-note-ref-${n}" aria-label="本文の注釈${n}へ戻る">*${n}</a> : `))
     const inline = new T('inline', '', 0)
     inline.content = text
     inline.children = []
     state.md.inline.parse(text, state.md, state.env, inline.children)
     out.push(inline)
-    out.push(html(` <a class="dq-note-back" href="#dq-note-ref-${n}" aria-label="本文の${n}番目の注釈へ戻る">↩</a></li>\n`))
+    out.push(html('</li>\n'))
   })
-  out.push(html('</ol></section>\n'))
+  out.push(html('</ul></section>\n'))
   const at = state.tokens.findIndex((t: Tok, i: number) =>
     t.type === 'heading_open' && inlineText(state.tokens[i + 1]).startsWith('関連ページ'))
   if (at < 0) state.tokens.push(...out)
@@ -460,6 +555,7 @@ export function seesaaSyntax(md: Md): void {
   md.block.ruler.before('fence', 'dq_pre', preRule, alt)
   md.block.ruler.before('reference', 'dq_fold', foldRule, alt)
   md.block.ruler.before('heading', 'dq_contents', contentsRule, alt)
+  md.block.ruler.before('table', 'dq_dl', dlRule)
   md.core.ruler.before('normalize', 'dq_notes_reset', (state: State) => {
     if (!state.inlineMode) state.env.dqNotes = []
   })
@@ -476,6 +572,7 @@ export function seesaaSyntax(md: Md): void {
   r.dq_fold_body_close = () => '</div>\n'
   r.dq_fold_close = () => '</details>\n'
   r.dq_contents = (tokens: Tok[], idx: number) => renderContents(tokens, idx)
+  r.dq_pre = (tokens: Tok[], idx: number) => renderPre(tokens, idx)
   r.dq_note_ref = (tokens: Tok[], idx: number) => {
     const n = tokens[idx].meta.n
     return `<sup class="dq-note-ref"><a id="dq-note-ref-${n}" href="#dq-note-${n}" aria-label="注釈${n}">*${n}</a></sup>`
